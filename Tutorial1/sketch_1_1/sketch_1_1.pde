@@ -1,19 +1,27 @@
 //Exercise:1.
 //Write a simple Processing program to draw an ellipse
 //at the centre of the display areawith a size of 400×400 pixels.
-size(400,400);
-background(255);
-smooth();
 
-// Set ellipses and rets to Center mode
+
+
+//void setup()
+//{
+  size(400,400);
+  background(255);
+  //smooth();
+  // Set ellipses and rets to Center mode
 ellipseMode(CENTER);
+//}
 
+//void draw()
+//{
 
-
+rectMode(CORNER);
 
 //The width and height of the ellipse are 
 //100 pixelsand 200 pixels respectively. 
 //Save and run the program.'
+strokeWeight(1);
 ellipse(200,200,100,200);
 
 
@@ -68,9 +76,14 @@ ellipse(215,65,22,16);
 fill(255);
 ellipse(185,65,10,10);
 ellipse(215,65,10,10);
-// draw Zoog's eyes
+// draw Zoog's eyes pupil
+
+
+//point(mouseX, mouseY);
+//int leftEyeX = (mouseX -215) / 100;
+//int leftEyeY = (mouseX -65) / 100;
 fill(0);
-ellipse(185,65,2,2);
+ellipse(185 ,65 ,2,2);
 ellipse(215,65,2,2);
 
 // Draw Zoog's mouth
@@ -127,4 +140,7 @@ fill(195, 176, 145);
 quad(155,260, 205,260, 195,340, 150,340);
 //left leg side
 quad(245,260, 195,260, 205,340, 255,340);
-//
+
+
+
+//}
