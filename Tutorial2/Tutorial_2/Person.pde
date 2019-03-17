@@ -1,174 +1,200 @@
-//float personScale = 1.0f;
 
-//void drawPerson()
-//{
-  
-//  rectMode(CENTER);
-//  ellipseMode(CENTER);  
-
-//  stroke(0);
-//  strokeWeight(1);
-//  ellipse(200,200,100,200);
-//  // draw Zoog's head
-//  fill(255);
-//  ellipse(200,70,60,60);
-  
-//  // draw Zoog's eyes
-//  fill(0);
-//  ellipse(185,65,22,16);
-//  ellipse(215,65,22,16);
-//  // draw Zoog's eyes
-//  fill(255);
-//  ellipse(185,65,10,10);
-//  ellipse(215,65,10,10);
-//  // draw Zoog's eyes pupil
-  
-  
-//  //point(mouseX, mouseY);
-//  //int leftEyeX = (mouseX -215) / 100;
-//  //int leftEyeY = (mouseX -65) / 100;
-//  fill(0);
-//  ellipse(185 ,65 ,2,2);
-//  ellipse(215,65,2,2);
-  
-//  // Draw Zoog's mouth
-//  stroke(0);
-//  fill(150);
-//  rect(200,90,10,10);
-  
-//  // draw Zoog's legs
-//  strokeWeight(5);
-  
-//  //Left leg
-//  fill(255);
-//  bezier(230,280, 250,320, 220,370 , 260,370);
-  
-//  //point(230,280);
-//  //point(250,320);
-//  //point(220,370);
-//  //point(260,370);
-  
-//  //Right Leg
-//  fill(255);
-//  bezier(170,280,150,320,180,370,140,370);
-//  //point(170,280);
-//  //point(150,320);
-//  //point(180,370);
-//  //point(140,370);
-  
-//  //draw Zoog's Arms
-//  //Left 
-//  bezier(230,120, 270,160, 260,200, 275,200);
-//  point(230,120);
-//  point(275,200);
-  
-//  //Right
-//  bezier(170,120, 130,160, 140,200, 125,200);
-//  point(170,120);
-//  point(125,200);
-  
+class Coord
+{
+ float x;
+ float y;
+ Coord(float inputX, float inputY)
+ {
+  x = inputX;
+  y = inputY;
+ }
+}
 
 
 
-//}
+abstract class Part
+{
+    Coord offset; //ie x + offset.x * w = relative x postiion
+    Coord scale;  // x * w = relative width
+    color col;
+    Part(Coord o, Coord s, color c)
+    {
+      offset = o;
+      scale = s;
+      col = c;
+    }
+    
+    Part()
+    {
+      offset = new Coord(0.0f, 0.0f);
+      scale = new Coord(1.0f, 1.0f);
+      col = color(255);
+    }
+    
+    void setColor(color in_col)
+    {
+     col = in_col; 
+    }
+    
+    abstract void drawPart(Coord position, float w, float h );
+}
 
-//class BodyPart
-//{
+class Body extends Part
+{
+    Body(Coord o, Coord s, color c)
+    {
+     super(o,s,c); 
+    }
+    void drawPart(Coord position, float w, float h )
+    {
+        stroke(col);
+        strokeWeight(1);
+        ellipse(position.x + (offset.x * w ),position.y + (offset.y * h ),scale.x * w,scale.y * h);
+         //ellipse(200,200,100,200);
+    }
 
-//}
+}
 
-//class Leg extends BodyPart
-//{
-  
-//}
+class Head extends Part
+{
+    Head(Coord o, Coord s, color c)
+    {
+     super(o,s,c); 
+    }
+    void drawPart(Coord position, float w, float h )
+    {
+      fill(255);
+      stroke(col);
+      strokeWeight(1);
+      ellipse(position.x + (offset.x * w ),position.y + (offset.y * h ),scale.x * w,scale.y * h);
+     }
+}
 
-//class Arm extends BodyPart
-//{
-  
-//}
+class Limb extends Part
+{
+    Coord hipPoint;
+    Coord kneePoint;
+    Coord anklePoint;
+    Coord footPoint;
+    Limb(Coord h, Coord k,Coord a, Coord f, color c)
+    {
+     setColor(c);
+     hipPoint = h;
+     kneePoint = k;
+     anklePoint = a;
+     footPoint = f;
+    }
+    void drawPart(Coord position, float w, float h )
+    {
+      fill(255);
+      stroke(col);
+      strokeWeight(1);
+      bezier(position.x +( hipPoint.x * w),
+             position.y +( hipPoint.y * h),
+             position.x +( kneePoint.x * w),
+             position.y +( kneePoint.y * h),
+             position.x +( anklePoint.x * w),
+             position.y +( anklePoint.y * h),
+             position.x +( footPoint.x * w),
+             position.y +( footPoint.y * h));
+     }
+}
+
+class p extends Part
+{
+    p(Coord o, Coord s, color c)
+    {
+     super(o,s,c); 
+    }
+    
+    void drawPart(Coord position, float w, float h )
+    {
+      // draw Zoog's head
+      fill(255);
+      stroke(col);
+      strokeWeight(5);
+      point(position.x + (offset.x * w ),position.y + (offset.y * h ));
+     }
+
+}
 
 
-//class head
-//{
+class Person
+{
+    Coord position;
+    float w;
+    float h;
+    Body body;
+    Head head;
+    Limb armLeft;
+    Limb armRight;
+    Limb legLeft;
+    Limb legRight;
+    float speedV;
+    float speedH;
+    
+    
+    Person(Coord pos, float in_w, float in_h)
+    {
+       position = pos;
+       w = in_w;
+       h = in_h;  
+    }
+    
+    Person(Coord pos, float in_w, float in_h, color c, float sV, float sH)
+    {
+                //              xoffset yoffset         xwidth yhieght   color
+       body = new Body(new Coord(0.50f, 0.55f),new Coord(0.60f, 0.5f),c);
+       head = new Head(new Coord(0.50f, 0.20f),new Coord(0.40f, 0.20f),c);
+       armLeft = new Limb(new Coord(0.31f, 0.35f),new Coord(0.05f, 0.40f),new Coord(0.05f, 0.50f),new Coord(0.05, 0.60f),c);
+       armRight = new Limb(new Coord(1- 0.31f,  0.35f),new Coord(1 - 0.05f,  0.40f),new Coord(1 - 0.05f,  0.50f),new Coord(1- 0.05f,  0.60f),c);
+       legLeft = new Limb(new Coord(0.30f, 0.74f),new Coord(0.20f, 0.82f),new Coord(0.40, 0.95f),new Coord(0.15f, 0.95f),c);
+       legRight = new Limb(new Coord(1 -0.30f, 0.74f),new Coord(1 - 0.20f, 0.82f),new Coord(1 - 0.40, 0.95f),new Coord( 1 -0.15f, 0.95f),c);
+       position = pos;
+       w = in_w;
+       h = in_h;
+       speedV= sV;
+       speedH = sH;
+    }
+    
+    void drawPerson()
+    {
+        body.drawPart(position, w ,h);
+        head.drawPart(position, w ,h);
+        armLeft.drawPart(position, w ,h);
+        armRight.drawPart(position, w ,h);
+        legLeft.drawPart(position, w ,h);
+        legRight.drawPart(position, w ,h);
+    }
+    void setSpeed(float v ,float h)
+    {
+       speedV = v;
+       speedH = h;
+    }
+    
+    void movePerson()
+    {
+      position.x  = position.x + speedV;
+      if(position.x + w > width || position.x < 0)
+      {
+          speedV = -speedV;
+      }
+      position.y  = position.y + speedH; 
+      if(position.y + h > height || position.y < 0)
+      {
+         speedH = -speedH; 
+      }
+    }
+}
 
-//}
 
-//class body
-//{
-  
-//}
-
-//class pants 
-//{
-  
-  
-  
-//  void drawPants()
-//  {
-//   //pants
-//  noStroke();
-//  fill(195, 176, 145);
-//  //right leg side
-//  quad(155,260, 205,260, 195,340, 150,340);
-//  //left leg side
-//  quad(245,260, 195,260, 205,340, 255,340);
-//  }
-
-//}
-
-////class belt
-////{
-//  //  //belt
-//  //noStroke();
-//  //fill(128,70,27);
-//  //rect(200,255,90,10);
-//  ////buckle
-//  //noFill();
-//  //strokeWeight(2);
-//  //stroke(218,145,0);
-//  //rect(200,255,10,10); 
-//  //line(200,255,205,255);
-  
-////}
-
-
-
-//class Person
-//{
-// float posX;
-// float posY;
-// float scaleW;
-// float scaleH;
-// color col;
-// int offsetx = -120;
-// int offsety = -50;
-////+ offsetx + x  )* scaleW
+void drawPeople()
+{
+  for (int i = 9; i > 0 ; i--)
+  {
+     people[i].drawPerson();
+     people[i].movePerson();
+  }
  
-// Person(float x, float y, float w, float h, color col )
-// {
-//   posX = x;
-//   posY = y;
-//   scaleW = w;
-//   scaleH = h;
-//   this.col = col;
-// }
- 
- 
-// void drawPerson()
-// {
-//    //draw Zoog's Arms
-//  //Left 
-//  bezier(230,120, 270,160, 260,200, 275,200);
-//  point(230,120);
-//  point(275,200);
   
-//  //Right
-//  bezier(170,120, 130,160, 140,200, 125,200);
-//  point(170,120);
-//  point(125,200); 
-// }
- 
-  
-  
-  
-//}
+}

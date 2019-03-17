@@ -32,7 +32,6 @@ void draw()
   background(255);
   //drawButtons();
   //drawAntsWhile();
-  //drawPerson();
   //drawCube(50, 1);
   //drawCube(100, 2);
    drawPeople();
