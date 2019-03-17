@@ -1,18 +1,27 @@
 Button b1;
 Button b2;
 Button b3;
+Person people[] = new Person[10];
+Person peter = new Person(new Coord(0.0, 0.0),100,200, color(0), random(2) ,random(2));
+Person simon = new Person(new Coord(200.0, 0.0),100,200, color(0),random(2),random(2));
 int size = 10;
 
 
 void setup() {
-size(400, 400);
+size(800, 800);
 smooth();
 
   b1 = new Button(40,50,100,75,color(255,0,0));
   b2 = new Button(150,50,100,75,color(0,255,0));
   b3 = new Button(260,50,100,75,color(0,0,255));
-  //noLoop();
 
+  //noLoop();
+  frameRate(60);
+  //Person people[];
+  for (int i = 9; i > 0; i--)
+  {
+    people[i] = new Person(new Coord(random(width - 100), random(height -200)),10 * (i + 1),20 * (i + 1), color(random(256),random(256),random(256)) ,random(2),random(2));
+  }
 
 }
 
@@ -26,11 +35,12 @@ void draw()
   //drawPerson();
   //drawCube(50, 1);
   //drawCube(100, 2);
-  //Person peter = new Person(new Coord(0.0f, 0.0f),new Coord(0.65f, 0.65f), color(0,255,0));
-  //peter.dynamicDraw();
-                                    // x    y    w   h           xoffset yoffset         xwidth yhieght   color
-  Person peter = new Person(new Coord(0.0, 0.0),200,200, new Coord(0.25f, 0.10f),new Coord(0.20f, 0.20f), color(0));
+   drawPeople();
+
   peter.drawPerson();
+  peter.movePerson();
+  simon.drawPerson();
+  simon.movePerson();
 
 } 
 
