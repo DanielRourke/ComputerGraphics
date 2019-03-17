@@ -24,8 +24,11 @@ void draw()
   //drawButtons();
   //drawAntsWhile();
   //drawPerson();
-  drawCube(50, 1);
-  drawCube(100, 2);
+  //drawCube(50, 1);
+  //drawCube(100, 2);
+  Person peter = new Person();
+  peter.dynamicDraw();
+  
 
 } 
 
