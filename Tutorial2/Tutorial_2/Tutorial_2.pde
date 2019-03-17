@@ -26,9 +26,11 @@ void draw()
   //drawPerson();
   //drawCube(50, 1);
   //drawCube(100, 2);
-  Person peter = new Person();
-  peter.dynamicDraw();
-  
+  //Person peter = new Person(new Coord(0.0f, 0.0f),new Coord(0.65f, 0.65f), color(0,255,0));
+  //peter.dynamicDraw();
+                                    // x    y    w   h           xoffset yoffset         xwidth yhieght   color
+  Person peter = new Person(new Coord(0.0, 0.0),200,200, new Coord(0.25f, 0.10f),new Coord(0.20f, 0.20f), color(0));
+  peter.drawPerson();
 
 } 
 
