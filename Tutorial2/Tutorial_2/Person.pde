@@ -17,11 +17,13 @@ abstract class Part
     Coord offset; //ie x + offset.x * w = relative x postiion
     Coord scale;  // x * w = relative width
     color col;
+    color fillCol;
     Part(Coord o, Coord s, color c)
     {
       offset = o;
       scale = s;
       col = c;
+      fillCol = color(255);
     }
     
     Part()
@@ -29,11 +31,17 @@ abstract class Part
       offset = new Coord(0.0f, 0.0f);
       scale = new Coord(1.0f, 1.0f);
       col = color(255);
+      fillCol = color(255);
     }
     
     void setColor(color in_col)
     {
      col = in_col; 
+    }
+    
+    void setFillColor(color in_col)
+    {
+      fillCol = in_col;
     }
     
     abstract void drawPart(Coord position, float w, float h );
@@ -47,6 +55,7 @@ class Body extends Part
     }
     void drawPart(Coord position, float w, float h )
     {
+        fill(fillCol);
         stroke(col);
         strokeWeight(1);
         ellipse(position.x + (offset.x * w ),position.y + (offset.y * h ),scale.x * w,scale.y * h);
@@ -63,7 +72,7 @@ class Head extends Part
     }
     void drawPart(Coord position, float w, float h )
     {
-      fill(255);
+      fill(fillCol);
       stroke(col);
       strokeWeight(1);
       ellipse(position.x + (offset.x * w ),position.y + (offset.y * h ),scale.x * w,scale.y * h);
@@ -86,7 +95,7 @@ class Limb extends Part
     }
     void drawPart(Coord position, float w, float h )
     {
-      fill(255);
+      fill(fillCol);
       stroke(col);
       strokeWeight(1);
       bezier(position.x +( hipPoint.x * w),
@@ -100,23 +109,23 @@ class Limb extends Part
      }
 }
 
-class p extends Part
-{
-    p(Coord o, Coord s, color c)
-    {
-     super(o,s,c); 
-    }
+//class p extends Part
+//{
+//    p(Coord o, Coord s, color c)
+//    {
+//     super(o,s,c); 
+//    }
     
-    void drawPart(Coord position, float w, float h )
-    {
-      // draw Zoog's head
-      fill(255);
-      stroke(col);
-      strokeWeight(5);
-      point(position.x + (offset.x * w ),position.y + (offset.y * h ));
-     }
+//    void drawPart(Coord position, float w, float h )
+//    {
+//      // draw Zoog's head
+//      fill(255);
+//      stroke(col);
+//      strokeWeight(5);
+//      point(position.x + (offset.x * w ),position.y + (offset.y * h ));
+//     }
 
-}
+//}
 
 
 class Person
@@ -172,28 +181,61 @@ class Person
        speedH = h;
     }
     
-    void movePerson()
+    void movePerson(int bounce)
     {
-      position.x  = position.x + speedV;
-      if(position.x + w > width || position.x < 0)
-      {
-          speedV = -speedV;
-      }
-      position.y  = position.y + speedH; 
-      if(position.y + h > height || position.y < 0)
-      {
-         speedH = -speedH; 
-      }
+      
+          position.x  = position.x + speedV;
+          
+          if(position.x + w > width || position.x < 0)
+          {
+              if(bounce == 1)
+              {
+                speedV = -speedV;
+              }
+              else
+              {
+                if(position.x + w > width)
+                {
+                  position.x = 0 ;
+                }
+                else
+                {
+                  position.x = width;
+                }
+              }
+              
+          }
+          position.y  = position.y + speedH; 
+          if(position.y + h > height || position.y < 0)
+          {
+            if(bounce == 1)
+            {
+             speedH = -speedH; 
+            }
+            else
+            {
+              if(position.y + h > height)
+              {
+                position.y = 0;
+              }
+              else
+              {
+                 position.y = height ;
+              }
+            }
+          }
+      
+     position.x  = position.x + speedV;
     }
 }
 
 
 void drawPeople()
 {
-  for (int i = 9; i > 0 ; i--)
+  for (int i = 9; i >= 0 ; i--)
   {
      people[i].drawPerson();
-     people[i].movePerson();
+     people[i].movePerson(1);
   }
  
   
