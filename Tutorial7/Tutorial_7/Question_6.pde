@@ -2,12 +2,12 @@
 
 void question6()
 {
- 
-  textSize(42);
+   background(100);
+  textSize(fontSize);
  // text(letters, 10,30, 350, 150);
-  int firstLine = width - 10;
-  int secondLine =width - 10;
-  int thirdLine = width - 10;
+  int firstLine = width;
+  int secondLine =width;
+  int thirdLine = width;
   String first = "";
   String second = "";
   String third = "";
