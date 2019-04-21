@@ -2,11 +2,14 @@ Menu_bar mp;
 Table dataTable;
 DataItem[] dataItems;
 float scale;
+float innerScale;
 int gridHeight;
 int gridWidth;
 int gridXOffset;
 int gridYOffset;
- PFont font; 
+ PFont font;
+   PFont smallfont;
+int selectedIndex;
 void setup()
 {
   size(800,800);
@@ -14,7 +17,8 @@ void setup()
     
     font = loadFont("ArialNarrow-48.vlw");
     textFont(font);
-    textAlign(CENTER, BOTTOM);
+    smallfont = loadFont("ArialMT-24.vlw");
+   // textAlign(CENTER, BOTTOM);
     
     
     //table = loadTable("assign1data.csv", "header");
@@ -34,7 +38,7 @@ void setup()
     gridYOffset = int(scale * 15);
     gridHeight = int(height - gridXOffset * 2);
     gridWidth= int(width  - gridXOffset * 2);
-    
+    innerScale =  gridWidth /200;
     textSize(int(5 * scale));
     println(scale);
     openFile();
@@ -42,6 +46,7 @@ void setup()
 
 void draw()
 {
+  
   // shift the origin(0, 0) to the lower-left corner
  // background(0);
   //translate(0, height);
@@ -53,26 +58,30 @@ void draw()
   rect(gridXOffset, gridYOffset, gridWidth, gridHeight);
   stroke(0);
   strokeWeight(1.0 * scale);
+  
+  
+   textFont(font);
+  textSize(int(5 * scale));
+  textAlign(CENTER, CENTER);
   line(gridXOffset, gridHeight +  gridYOffset,gridWidth + gridXOffset , gridHeight +  gridYOffset);// draw x-axis
   for( int i = 0 ; i < 11 ; i++  )
   {
     line(gridXOffset + (i * (gridWidth / 10)),  gridHeight +  gridYOffset - (2 * scale),gridXOffset + (i * (gridWidth / 10)), gridHeight +  gridYOffset + (2 * scale)  );
-    text(i * 10, gridXOffset + (i * (gridWidth / 10)), gridHeight +  gridYOffset + (5 * scale) );
+    text(i * 100, gridXOffset + (i * (gridWidth / 10)), gridHeight +  gridYOffset + (5 * scale) );
   }
   text(" X ",gridXOffset + gridWidth / 2, gridHeight  +  gridYOffset + (10 * scale));
   
   
-  textAlign(CENTER, CENTER);
+textAlign(CENTER, CENTER);
   line(gridXOffset, gridHeight +  gridYOffset ,gridXOffset ,  gridYOffset);// draw x-axis
   for( int i = 0 ; i < 11 ; i++  )
   {
     line(gridXOffset - (2 * scale), gridYOffset + (i * gridHeight/10),gridXOffset + (2 * scale),gridYOffset + (i * gridHeight/10)) ;
-    text(i * 10, gridXOffset - (5 * scale), gridYOffset + (i * gridHeight/10));
+    text(i * 100, gridXOffset - (5 * scale), gridHeight+ gridYOffset - (i * gridHeight/10));
   }
   text(" Y ",(4 * scale), gridYOffset + gridHeight/2 );
   
-  
-  
+
   
   //line(0, 1, 0, height);// draw y-axis
   smooth();
@@ -83,31 +92,29 @@ void draw()
  // ellipse(width, height, 45, 45);
   //String mousePos = "X: " + mouseX + "Y: " +  mouseY; 
  // text(mousePos, mouseX,mouseY);
-  
- // DataItem[] items = new DataItem[10];
- // items[0] = new squareDataItem("Square", "M", 50,50,1,3000,5);
- // items[0].display();
-  
- // items[1] = new circleDataItem("Circle", "M", 100,100,2,3000,5);
- // items[1].display();
-  
- // items[2] = new dynamicDataItem("Triangle", "M", 150,150,3,3000,5);
- // items[2].display();
- //// items[2].isInside(mouseX,mouseY);
-  
- // items[3] = new dynamicDataItem("Rombus", "M", 200,200,4,3000,5);
- // items[3].display();
- //// items[3].isInside(mouseX,mouseY);
- 
- // items[4] = new dynamicDataItem("Rombus", "M", 250,250,5,3000,5);
- // items[4].display();
- //dataItems[0].display();
+
+ int counterCauseJavaDoesNotHavePointersWTF = 0;
+ int selectedIndex = -1;
  
  for(DataItem item: dataItems)
  {
+   
    item.display();
+   if (item.isInside(mouseX, mouseY))
+   {
+     selectedIndex = counterCauseJavaDoesNotHavePointersWTF;
+   }
+   counterCauseJavaDoesNotHavePointersWTF++;
  }
-  
+ 
+ if(selectedIndex != -1)
+ {
+   dataItems[selectedIndex].displayInfo();
+ }
+ 
+ //dataItems[21].display();
+ //dataItems[21].isInside(mouseX, mouseY);
+ 
 }
 
 void openFile()
@@ -124,7 +131,7 @@ void openFile()
         String g = row.getString("Gender");
         float xx = gridXOffset + (gridWidth * (row.getFloat("X") / 1000));
         println(xx);
-        float yy = gridXOffset + (gridHeight - (gridHeight * (row.getFloat("Y") / 1000)));
+        float yy = gridYOffset + (gridHeight - (gridHeight * (row.getFloat("Y") / 1000)));
         println(yy);
         int grp = row.getInt("Group")  +1;
         int yr = row.getInt("Year of Birth");
@@ -141,13 +148,10 @@ void openFile()
         else
         {
            dataItems[index] = new dynamicDataItem(n,  g, xx, yy, grp, yr, grd);
-          
         }
         println(dataItems[index]);
         
-        index++;
-        
-        
+        index++;   
     }
   
 }
