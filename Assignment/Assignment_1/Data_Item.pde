@@ -68,8 +68,10 @@ public
      textSize(12);
      textAlign(LEFT,TOP);
      text("X " + int(x),x, y - 48 );
-     text("Y " + int(height - y),x, y - 38 );
-      text("Y " + ((gridHeight -(y ))),x, y - 28 );
+     text("Y " + int(  y),x, y - 38 );
+      text("Y " + (gridHeight - (y - gridYOffset)  )  ,x, y - 28 );
+      // - offset
+      // add gridHigh - (girdhigh - y)   
      // float yy = gridYOffset + (gridHeight - (gridHeight * (row.getFloat("Y") / 1000)));
   }
 };
