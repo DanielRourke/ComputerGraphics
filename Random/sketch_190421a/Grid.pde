@@ -29,8 +29,10 @@ class Grid
  
  void drawGrid()
  {
-   fill(255);
+   noStroke();
+     fill(255);
    rect(x,y,w,h);
+   stroke(1);
   line(x , y + h,x+  w , y + h);
    
    for(int i = 0; i <= xspread; i += 10)
