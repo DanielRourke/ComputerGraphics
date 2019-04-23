@@ -1,32 +1,70 @@
 
-float beginX;
-float beginY;
-float endX;
-float endY;
+
 
 void question3()
 {
 
-    fill(0,45);
+    fill(0);
     rect(0,0,width ,height);
+
+    float w =width/2;
+    float h = height/2;
 
     angle += 0.01;
  
     
     pushMatrix();
-    translate(width/2, height/2);
+    translate(w, h);
     rotate(-angle);
     image(earth ,0,0);
     popMatrix();
-    
+
   
+    float x = w + w * cos(angle);
+    float y = h + h * sin(angle);
+    
+      
     pushMatrix();
-    translate(width/2, height/2);
+    translate(x, y);
     rotate(angle);
-    translate(width/4, height/4 );
-    rotate(angle);
-    image(moon, 0,0);
+    image(moon,0,0);
     popMatrix();
+    
+    if (shuttleY - targetY < 0.1)
+    {
+      targetX = x;
+      targetY = y;
+    }
+    
+    
+    
+    shuttleX += (targetX - shuttleX) * easing;
+    shuttleY += (targetY - shuttleY) * easing;
+    image(shuttle, shuttleX,shuttleY);
+    
+   //intail position 
+   
+   //move towards moon at 0 speed
+   //increase speed
+   //when half way //decreast speed
+   
+    
+    
+  //  translate(width/4, height/4 );
+  //  rotate(angle);
+  //  image(moon, 0,0);
+  //  popMatrix();
+  
+  //  pushMatrix();
+  //  translate(w, h);
+  //  rotate(angle);
+    
+  //  translate(width/4, height/4 );
+  //  rotate(angle);
+  //  image(moon, 0,0);
+  //  popMatrix();
+    
+    // x+ sin y + cos
   
     //image(shuttle,0 ,0 );
     //translate(width/4, height/4);
