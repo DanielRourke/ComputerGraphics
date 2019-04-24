@@ -136,7 +136,6 @@ class circleDataItem extends DataItem
   {
     float d = (pointX -x)*(pointX -x) + (pointY -y)*(pointY -y);d = sqrt(d);
     return d < rad;
-    
   }
   
 };
@@ -171,7 +170,6 @@ class dynamicDataItem extends DataItem
     {
       points[i] = new PVector((rad * cos(angle * i)),( rad * sin(angle * i)));
     }
-    
      
     itemShape.beginShape();
     itemShape.fill(fillColor);
@@ -183,7 +181,6 @@ class dynamicDataItem extends DataItem
    
   }
   
-
   @Override
   boolean isInside(float pointX, float pointY)
   {

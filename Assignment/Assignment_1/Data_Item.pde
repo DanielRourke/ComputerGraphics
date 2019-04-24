@@ -251,7 +251,7 @@ class dynamicDataItem extends DataItem
   @Override
   void display()
   {
-      shape(itemShape, x,y);
+      shape(itemShape,x,y);
        displayName();
   }
   @Override
