@@ -13,11 +13,12 @@ private
   int year;
   int grade;
   int rad;
-  int fillColor;
+  color fillColor;
   PShape itemShape;
   int index;
   float itemScale;
   boolean selected;
+  
 public
   DataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale , int idx) 
   {
@@ -29,16 +30,32 @@ public
    year = yr;
    grade = grd;
    itemScale = sqrt(scale);
-   
    rad = int(grade *  itemScale);
-   fillColor = color(  255 + ((year - 2000) *  -51  ),0 + ((year - 2000) *  51  ) ,0  );
+   fillColor = color(yearColor[year - 2000]);
    index = idx;
    selected = false;
+   itemShape = createShape(GROUP);
   };
-  void updateSize(int grd)
+  void updateSize(float scale)
   {
-      grade = grd;
+    itemScale = sqrt(scale);
+    rad = int(grade *  itemScale);
+    updateShape();
+  }
+  
+  void increaseSize()
+  {
+      grade++;
       rad = int(grade *  itemScale);
+      updateShape();
+  }
+  
+  void decreaseSize()
+  {
+    if(grade > 1)
+      grade--;
+     rad = int(grade *  itemScale);
+     updateShape();
   }
   void updatePosition(float xx, float yy)
   {
@@ -46,6 +63,35 @@ public
        y = yy;
   }
   boolean isInside(float pointX, float pointY) {return false;};
+    void updateShape(){};
+    
+  void updateColor()
+  {
+     if(selected)
+     {
+          for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            itemShape.getChild(i).setFill(color(0,0, 255,120));
+          }
+     }
+     else
+     {
+         for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            itemShape.getChild(i).setFill(fillColor);
+          }
+     } 
+      
+  }
+  
+  void removeChildren()
+  {
+           for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            itemShape.removeChild(i);
+          }
+    
+  }
   int getSide(PVector A, PVector B, PVector C)
   {
     return int(((B.x + x ) - (A.x + x)) * (C.y - (A.y + y)) - ((B.y + y) - (A.y + y)) * (C.x - (A.x + x)));
@@ -60,33 +106,36 @@ class squareDataItem extends DataItem
   squareDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale ,int idx)
   {
    super(n,  g, xx, yy, grp,  yr,grd, scale ,idx); 
-   itemShape = createShape();
+   
    points = new PVector[4];
    updateShape();
   }
   
-   @Override
-  void updateSize(int grd)
-  {
-      grade = grd;
-      rad = int(grade *  itemScale);
-      updateShape();
-  }
+
+  @Override
   void updateShape()
   {
+    removeChildren();
     points[0] = new PVector(0 - rad, 0 - rad);
     points[1] = new PVector(0 - rad, 0 + rad);
     points[2] = new PVector(0 + rad, 0 + rad);
     points[3] = new PVector(0 + rad, 0 - rad);
-   
-    itemShape.beginShape();
-    itemShape.fill(fillColor);
+    PShape groupShape = createShape();
+    groupShape.beginShape();
+ //   updateColor();
     for (int i = 0; i < 4 ; i++)
     {
-        itemShape.vertex(points[i].x,  points[i].y);
+        groupShape.vertex(points[i].x,  points[i].y);
     }
-    itemShape.endShape(CLOSE);
-  
+    groupShape.endShape(CLOSE);
+    
+      if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateColor();
   } 
   
   @Override
@@ -100,8 +149,6 @@ class squareDataItem extends DataItem
                if ( getSide(points[i], points[(i + 1 )% 4], P) >= 0)
                      return false;
             }
-         
-
         return true;
   };
   
@@ -118,17 +165,19 @@ class circleDataItem extends DataItem
      updateSize(grd);
   }
   
-  void updateSize(int grd)
-  {
-      grade = grd;
-      rad = int(grade * itemScale * 0.85);
-      updateShape();
-  }
-  
+
+  @Override
   void updateShape()
   {
-    itemShape = createShape(ELLIPSE,0,0,rad*2,rad*2);
-    itemShape.setFill(fillColor);
+    removeChildren();
+    PShape groupShape = createShape(ELLIPSE,0,0,rad*2,rad*2);
+    if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateColor();
   } 
   
   @Override
@@ -152,32 +201,33 @@ class dynamicDataItem extends DataItem
     points = new PVector[group];
     angle = TWO_PI/group;
     rad = int(grade *  itemScale * 1.25);
-    itemShape = createShape();
     updateShape();
-     
   }
   @Override
-  void updateSize(int grd)
-  {
-      grade = grd;
-      rad = int(grade *  itemScale * 1.25);
-      updateShape();
-  }
-  
   void updateShape()
   {
+    removeChildren();
     for (int i = 0; i < group ; i++)
     {
       points[i] = new PVector((rad * cos(angle * i)),( rad * sin(angle * i)));
     }
-     
-    itemShape.beginShape();
-    itemShape.fill(fillColor);
+    PShape groupShape = createShape();
+    groupShape.beginShape();
+    
     for (int i = 0; i < group ; i++)
     {
-        itemShape.vertex(points[i].x,  points[i].y);
+       groupShape.vertex(points[i].x,  points[i].y);
     }
-    itemShape.endShape(CLOSE);
+    groupShape.endShape(CLOSE);
+   
+      if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateColor();
+   
    
   }
   

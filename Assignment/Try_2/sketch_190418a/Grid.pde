@@ -22,6 +22,8 @@ class Grid
  Table dataTable;
  DataItem[] dataItems;
  int itemHover;
+ //Hover_Menu hoverMenu;
+ 
  Grid()
  {
    x = width / 10;
@@ -37,7 +39,26 @@ class Grid
    yunit =  h / 100;
    loadItems();
    clearSelectedItems();
+  // hoverMenu = new Hover_Menu(xunit, yunit ,textSize);
  };
+ 
+ void resizeGrid()
+ {
+   x = width / 10;
+   y = height / 10;
+   textSize = int(   sqrt(width * height) / 50);
+   w = width - x - x;
+   h = height - y - y;
+   xunit =  w / 100;
+   yunit =  h / 100;
+    for (int i = 0 ; i < dataItems.length; i++)
+    {
+      dataItems[i].updateSize(xunit + yunit);
+    }
+  
+   
+ }
+ 
  
  void drawGrid()
  {
@@ -50,7 +71,7 @@ class Grid
      textAlign(CENTER, TOP);
      textSize(textSize);
      fill(0);
-     text(nf(i * (xspread/10) , 0 ,1), x + (i * xunit), y + h + (2 * yunit));
+     text(nf(i * (xspread/100) , 0 ,1), x + (i * xunit), y + h + (2 * yunit));
    }
    text(bottom, x + (50 * xunit), y + h + ( 6  * yunit));
 
@@ -63,7 +84,7 @@ class Grid
        translate(x - (2 * xunit), y + h - (i * yunit));
        rotate(-TWO_PI/4);
        textAlign(CENTER, BOTTOM);
-        text(nf(i *  (yspread/10), 0 ,1), 0,0);
+        text(nf(i *  (yspread/100), 0 ,1), 0,0);
        popMatrix();
    }
    pushMatrix();
@@ -79,14 +100,12 @@ class Grid
    {
     for (int i = 0 ; i < dataItems.length; i++)
     {
+    
       shape(dataItems[i].itemShape, map(dataItems[i].x ,xmin , xspread, x, x + w), 
       map(dataItems[i].y , ymin, yspread, y + h, y));
-       println(keyCode);
     }
    };
    
- 
- 
      void loadItems()
     {
          dataTable = loadTable("assign1data.csv", "header");
@@ -109,15 +128,15 @@ class Grid
             
             if ( grp == 1)
             {
-               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, 2* xunit,index);
+               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit+ xunit,index);
             }
             else if (grp == 2)
             {
-               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd,2 *xunit ,index);
+               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit+ xunit,index);
             }
             else
             {
-               dataItems[index] = new dynamicDataItem(n,  g, xx, yy, grp, yr, grd,2 * xunit,index);
+               dataItems[index] = new dynamicDataItem(n,  g, xx, yy, grp, yr, grd, yunit+ xunit,index);
             }
             println(dataItems[index]);
             
@@ -146,6 +165,8 @@ class Grid
       map(dataItems[itemHover].y + (5 * yunit) , ymin, yspread, y + h, y));
           text(nf(dataItems[itemHover].y, 0 , 1 ), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
       map(dataItems[itemHover].y + (10 * yunit) , ymin, yspread, y + h, y));
+    //  dataItems[itemHover].selected = true;
+     // dataItems[itemHover].updateShape();
         }
     }
     
@@ -153,7 +174,11 @@ class Grid
     void clearSelectedItems()
     {
        for (int i = 0; i < dataItems.length; i++)
-           dataItems[i].selected = false;
+       {
+         dataItems[i].selected = false;
+         dataItems[i].updateColor();
+       }
+           lastSelectedIndex = -1;
     }
     
     void addSelectedItem()
@@ -164,32 +189,73 @@ class Grid
             map(mouseY , y + h, y, ymin, yspread)))
             {
               dataItems[i].selected = true;
+              dataItems[i].updateColor();
               
+            //  xdiff =  map(mouseX, x, x + w ,xmin , xspread) - grid.dataItems[i].x;
+           //   ydiff =  map(mouseY, y + h, y, ymin, yspread) - grid.dataItems[i].y;
+               lastSelectedIndex = i;
               
-              float xdiff =  map(mouseX, x, x + w ,xmin , xspread) - grid.dataItems[i].x;
-              float ydiff =  map(mouseY, y + h, y, ymin, yspread) - grid.dataItems[i].y;
-              
-              
-              println("item " + i + "added");
               break;
             }
         }
-      //  clickPosX = mouseX;
+      //clickPosX = mouseX;
         //clickPosY = mouseY;
     }
     
     
     void moveSelectedItems()
     {
+        println(lastSelectedIndex);
+        float xdiff = 0;
+        float ydiff = 0;
+        
+        if(lastSelectedIndex != -1)
+        {
+            xdiff = grid.dataItems[lastSelectedIndex].x;
+            ydiff = grid.dataItems[lastSelectedIndex].y;
+        }
+        
         for (int i = 0 ; i < dataItems.length; i++)
         {
           if (dataItems[i].selected)
           {
-
-            grid.dataItems[i].x += xdiff;
-            grid.dataItems[i].y += ydiff;
-            println(i);
+              grid.dataItems[i].x +=  map(mouseX, x, x + w ,xmin , xspread) - xdiff;
+              grid.dataItems[i].y +=  map(mouseY, y + h, y, ymin, yspread) - ydiff;
+             
           }
         }
+    }
+    
+    void increaseSelectedItems()
+    {
+        for (int i = 0 ; i < dataItems.length; i++)
+        {
+          if (dataItems[i].selected)
+          {
+              grid.dataItems[i].increaseSize();
+             
+          }
+        }
+    }
+    
+    void decreaseSelectedItems()
+    {
+        for (int i = 0 ; i < dataItems.length; i++)
+        {
+          if (dataItems[i].selected)
+          {
+              grid.dataItems[i].decreaseSize();
+             
+          }
+        }
+    }
+    
+    int countSelectedItems()
+    {
+      int ret = 0;
+        for (int i = 0 ; i < dataItems.length; i++)
+          if (dataItems[i].selected)
+            ret++;
+       return ret;
     }
 };
