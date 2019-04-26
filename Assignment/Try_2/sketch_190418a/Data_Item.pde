@@ -15,12 +15,11 @@ private
   int rad;
   color fillColor;
   PShape itemShape;
-  int index;
   float itemScale;
   boolean selected;
   
 public
-  DataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale , int idx) 
+  DataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale) 
   {
    name = n;
    gender = g;
@@ -32,7 +31,6 @@ public
    itemScale = sqrt(scale);
    rad = int(grade *  itemScale);
    fillColor = color(yearColor[year - 2000]);
-   index = idx;
    selected = false;
    itemShape = createShape(GROUP);
   };
@@ -103,9 +101,9 @@ public
 class squareDataItem extends DataItem
 {
   PVector points[];
-  squareDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale ,int idx)
+  squareDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale )
   {
-   super(n,  g, xx, yy, grp,  yr,grd, scale ,idx); 
+   super(n,  g, xx, yy, grp,  yr,grd, scale); 
    
    points = new PVector[4];
    updateShape();
@@ -159,9 +157,9 @@ class squareDataItem extends DataItem
 
 class circleDataItem extends DataItem
 {
-  circleDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale ,int idx)
+  circleDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale)
   {
-     super(n,  g, xx, yy, grp,  yr,grd , scale ,idx);
+     super(n,  g, xx, yy, grp,  yr,grd , scale);
      updateSize(grd);
   }
   
@@ -195,9 +193,9 @@ class dynamicDataItem extends DataItem
   PVector points[];
   float angle;
   
-  dynamicDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale ,int idx)
+  dynamicDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale)
   {
-    super(n, g, xx, yy, grp, yr,grd , scale ,idx); 
+    super(n, g, xx, yy, grp, yr,grd , scale); 
     points = new PVector[group];
     angle = TWO_PI/group;
     rad = int(grade *  itemScale * 1.25);

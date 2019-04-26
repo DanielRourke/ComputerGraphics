@@ -37,8 +37,9 @@ class Grid
    h = height - y - y;
    xunit =  w / 100;
    yunit =  h / 100;
-   loadItems();
-   clearSelectedItems();
+   dataTable = new Table();
+ //  loadItems();
+  // clearSelectedItems();
   // hoverMenu = new Hover_Menu(xunit, yunit ,textSize);
  };
  
@@ -73,7 +74,7 @@ class Grid
      fill(0);
      text(nf(i * (xspread/100) , 0 ,1), x + (i * xunit), y + h + (2 * yunit));
    }
-   text(bottom, x + (50 * xunit), y + h + ( 6  * yunit));
+   text(bottom, x + (50 * xunit), y + h + ( 5  * yunit));
 
    
    line(x , y + h, x ,y);
@@ -108,7 +109,7 @@ class Grid
    
      void loadItems()
     {
-         dataTable = loadTable("assign1data.csv", "header");
+        dataTable = loadTable(currentFile.getAbsolutePath(), "header");
         println( dataTable.getRowCount() + " total rows in table"); 
     
         dataItems = new DataItem[dataTable.getRowCount()];
@@ -128,21 +129,50 @@ class Grid
             
             if ( grp == 1)
             {
-               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit+ xunit,index);
+               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit);
             }
             else if (grp == 2)
             {
-               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit+ xunit,index);
+               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit);
             }
             else
             {
-               dataItems[index] = new dynamicDataItem(n,  g, xx, yy, grp, yr, grd, yunit+ xunit,index);
+               dataItems[index] = new dynamicDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit);
             }
             println(dataItems[index]);
             
             index++;   
         }
+      gridEmpty = false;
+    };
+    
+    void saveItems()
+    {
+    
+         dataTable = new Table();
+         
+         dataTable.addColumn("Name");
+         dataTable.addColumn("X");
+         dataTable.addColumn("Y");
+         dataTable.addColumn("Group");
+         dataTable.addColumn("Gender");
+         dataTable.addColumn("Year of Birth");
+         dataTable.addColumn("Grade");
+
+        for (int i = 0; i <  dataItems.length ; i++)
+        {
+            TableRow newRow = dataTable.addRow();
+            newRow.setString("Name", dataItems[i].name);
+            newRow.setInt("X", int(dataItems[i].x));
+            newRow.setInt("Y", int(dataItems[i].y));
+            newRow.setInt("Group", dataItems[i].group - 1);
+            newRow.setString("Gender", dataItems[i].gender);
+            newRow.setInt("Year of Birth", dataItems[i].year);
+            newRow.setInt("Grade", dataItems[i].grade);
+        }
       
+        
+        saveTable(dataTable, currentFile.getAbsolutePath());
     };
     
     void checkHover()

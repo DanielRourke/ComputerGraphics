@@ -31,14 +31,27 @@ public class Menu_Bar {
     // Create and add simple menu item to one of the drop down menu
     JMenuItem increase_font_size = new JMenuItem("Increase Font Size");
     JMenuItem decrease_font_size = new JMenuItem("Decrease Font Size");
+    JMenuItem action_new = new JMenuItem("New");
+    JMenuItem action_open = new JMenuItem("Open");
+    JMenuItem action_save = new JMenuItem("Save");
+    JMenuItem action_save_as = new JMenuItem("Save As");
     JMenuItem action_exit = new JMenuItem("Exit");
 
     font_menu.add(increase_font_size);
     font_menu.add(decrease_font_size);
+    file_menu.add(action_new);
+    file_menu.add(action_open);
+    file_menu.add(action_save);
+    file_menu.add(action_save_as);
     file_menu.add(action_exit);
     
-    
-     action_exit.addActionListener(new ExitListener());
+    action_new.addActionListener(new NewFileListener());
+    action_open.addActionListener(new OpenListener());
+    action_save.addActionListener(new SaveListener());
+    action_save_as.addActionListener(new SaveAsListener());
+    action_exit.addActionListener(new ExitListener());
+     
+     
      //increase_font_size.addActionListener(new IncreaseSizeListener());
      //decrease_font_size.addActionListener(new DecreaseSizeListener());
      
@@ -76,43 +89,6 @@ public class Menu_Bar {
 
 
 
-
-class ExitListener implements ActionListener
-{
-  void actionPerformed(ActionEvent e)
-  {
-    System.exit(0);
-  }
-}
-
-class resizeListener implements ComponentListener 
-{  
-        // This method is called after the component's size changes
-       void componentResized(ComponentEvent evt) {
-            Component c = (Component)evt.getSource();
-    
-            // Get new size
-            Dimension newSize = c.getSize();
-           println(newSize);
-           grid.resizeGrid();
-        }
-        
-        void  componentMoved(ComponentEvent evt)
-        {
-          
-        }
-        void  componentShown(ComponentEvent evt)
-        {
-          
-        }
-        
-        void  componentHidden(ComponentEvent evt)
-        {
-          
-        }
-        
-        
-}
 
 //class IncreaseSizeListener implements ActionListener
 //{
