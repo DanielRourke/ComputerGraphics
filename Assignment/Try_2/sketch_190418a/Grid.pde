@@ -26,6 +26,7 @@ class Grid
  int stroke;
  boolean fill;
  boolean label;
+ String[] headers;
  Grid()
  {
    x = width / 10;
@@ -120,7 +121,14 @@ class Grid
     {
         dataTable = loadTable(currentFile.getAbsolutePath(), "header");
         println( dataTable.getRowCount() + " total rows in table"); 
-    
+        
+        headers = new String[dataTable.getColumnCount()];
+        for (int i = 0; i < dataTable.getColumnCount(); i++)
+        {
+           headers[i] = dataTable.getColumnTitle(i);
+        }
+        
+        
         dataItems = new DataItem[dataTable.getRowCount()];
         int index = 0;
     
@@ -138,22 +146,22 @@ class Grid
             
             
             
-        //   println(groupIconType.get(grp -1) , grp);
-            if (groupIconType.get(grp -1).equals("circle"))
+        //   println(groupIconType.get(grp -1) , grp); //<>//
+            if (groupIconType[grp -1].equals("circle"))
             {
                dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit, stroke , fill, label);
             }
-            else if (groupIconType.get(grp -1 ).equals("square"))
+            else if (groupIconType[grp -1].equals("square"))
             {
                dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label);
             }
-            else if (groupIconType.get(grp -1).equals("dynamic"))
+            else if (groupIconType[grp -1].equals("dynamic"))
             {
                dataItems[index] = new dynamicDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label);
             }
             else
             {
-                dataItems[index] = new imageDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label , groupIconType.get(grp -1) );
+                dataItems[index] = new imageDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label , groupIconType[grp -1] );
             }
             println(dataItems[index]);
             

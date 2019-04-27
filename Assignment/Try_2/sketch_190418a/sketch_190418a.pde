@@ -3,7 +3,7 @@ Menu_Bar mp;
 File currentFile;
 boolean gridEmpty = true;
 Grid grid;
-ArrayList<String> groupIconType;
+String[] groupIconType;
 void setup()
 {
   size(1000,1000);

@@ -21,37 +21,37 @@ public class Menu_Bar {
     JMenuBar menu_bar = new JMenuBar();
     // Add the menubar to the frame
     frame.setJMenuBar(menu_bar);
-    // Define and add two drop down menu to the menubar
+    
     JMenu file_menu = new JMenu("File");
     //JMenu font_menu = new JMenu("Font");
     JMenu settings_menu = new JMenu("Settings");
     JMenu icons_menu = new JMenu("Group Icons");
-    JMenu group_0_menu = new JMenu("Group 0");
-    JMenu group_1_menu = new JMenu("Group 1");
-    JMenu group_2_menu = new JMenu("Group 2");
-    JMenu group_3_menu = new JMenu("Group 3");
-    JMenu group_4_menu = new JMenu("Group 4");
-    JMenu group_5_menu = new JMenu("Group 5");
-    JMenu group_6_menu = new JMenu("Group 6");
-    JMenu group_7_menu = new JMenu("Group 7");
-    JMenu group_8_menu = new JMenu("Group 8");
-    JMenu group_9_menu = new JMenu("Group 9");
+    //JMenu group_0_menu = new JMenu("Group 0");
+    //JMenu group_1_menu = new JMenu("Group 1");
+    //JMenu group_2_menu = new JMenu("Group 2");
+    //JMenu group_3_menu = new JMenu("Group 3");
+    //JMenu group_4_menu = new JMenu("Group 4");
+    //JMenu group_5_menu = new JMenu("Group 5");
+    //JMenu group_6_menu = new JMenu("Group 6");
+    //JMenu group_7_menu = new JMenu("Group 7");
+    //JMenu group_8_menu = new JMenu("Group 8");
+    //JMenu group_9_menu = new JMenu("Group 9");
     
     menu_bar.add(file_menu);
    // menu_bar.add(font_menu);
     menu_bar.add(settings_menu);
     menu_bar.add(icons_menu);
 
-    icons_menu.add(group_0_menu);
-    icons_menu.add(group_1_menu);
-    icons_menu.add(group_2_menu);
-    icons_menu.add(group_3_menu);
-    icons_menu.add(group_4_menu);
-    icons_menu.add(group_5_menu);
-    icons_menu.add(group_6_menu);
-    icons_menu.add(group_7_menu);
-    icons_menu.add(group_8_menu);
-    icons_menu.add(group_9_menu);
+    //icons_menu.add(group_0_menu);
+    //icons_menu.add(group_1_menu);
+    //icons_menu.add(group_2_menu);
+    //icons_menu.add(group_3_menu);
+    //icons_menu.add(group_4_menu);
+    //icons_menu.add(group_5_menu);
+    //icons_menu.add(group_6_menu);
+    //icons_menu.add(group_7_menu);
+    //icons_menu.add(group_8_menu);
+    //icons_menu.add(group_9_menu);
 
     // Create and add simple menu item to one of the drop down menu
     //JMenuItem increase_font_size = new JMenuItem("Increase Font Size");
@@ -67,8 +67,29 @@ public class Menu_Bar {
     JMenuItem shape_border = new JMenuItem("Border Size");
     JCheckBoxMenuItem label_show = new JCheckBoxMenuItem("Show Labels", true);
     
+    
     JMenuItem combo_select = new JMenuItem("Select");
     JMenuItem file_select = new JMenuItem("Browse");
+    //JMenuItem combo_0_select = new JMenuItem("Select");
+    //JMenuItem file_0_select = new JMenuItem("Browse");
+    //JMenuItem combo_1_select = new JMenuItem("Select");
+    //JMenuItem file_1_select = new JMenuItem("Browse");
+    //JMenuItem combo_2_select = new JMenuItem("Select");
+    //JMenuItem file_2_select = new JMenuItem("Browse");
+    //JMenuItem combo_3_select = new JMenuItem("Select");
+    //JMenuItem file_3_select = new JMenuItem("Browse");
+    //JMenuItem combo_4_select = new JMenuItem("Select");
+    //JMenuItem file_4_select = new JMenuItem("Browse");
+    //JMenuItem combo_5_select = new JMenuItem("Select");
+    //JMenuItem file_5_select = new JMenuItem("Browse");
+    //JMenuItem combo_6_select = new JMenuItem("Select");
+    //JMenuItem file_6_select = new JMenuItem("Browse");
+    //JMenuItem combo_7_select = new JMenuItem("Select");
+    //JMenuItem file_7_select = new JMenuItem("Browse");
+    //JMenuItem combo_8_select = new JMenuItem("Select");
+    //JMenuItem file_8_select = new JMenuItem("Browse");
+    //JMenuItem combo_9_select = new JMenuItem("Select");
+    //JMenuItem file_9_select = new JMenuItem("Browse");
 
     //font_menu.add(increase_font_size);
    // font_menu.add(decrease_font_size);
@@ -82,35 +103,38 @@ public class Menu_Bar {
     settings_menu.add(shape_border);
     settings_menu.add(label_show);
     
-    group_0_menu.add(combo_select);
-    group_0_menu.add(file_select);
+    icons_menu.add(combo_select);
+    icons_menu.add(file_select);
     
-    group_1_menu.add(combo_select);
-    group_1_menu.add(file_select);
+    //group_0_menu.add(combo_0_select);
+    //group_0_menu.add(file_0_select);
     
-    group_2_menu.add(combo_select);
-    group_2_menu.add(file_select);
+    //group_1_menu.add(combo_1_select);
+    //group_1_menu.add(file_1_select);
     
-    group_3_menu.add(combo_select);
-    group_3_menu.add(file_select);
+    //group_2_menu.add(combo_2_select);
+    //group_2_menu.add(file_2_select);
+    
+    //group_3_menu.add(combo_3_select);
+    //group_3_menu.add(file_3_select);
         
-    group_4_menu.add(combo_select);
-    group_4_menu.add(file_select);
+    //group_4_menu.add(combo_4_select);
+    //group_4_menu.add(file_4_select);
     
-    group_5_menu.add(combo_select);
-    group_5_menu.add(file_select);
+    //group_5_menu.add(combo_5_select);
+    //group_5_menu.add(file_5_select);
     
-    group_6_menu.add(combo_select);
-    group_6_menu.add(file_select);
+    //group_6_menu.add(combo_6_select);
+    //group_6_menu.add(file_6_select);
     
-    group_7_menu.add(combo_select);
-    group_7_menu.add(file_select);
+    //group_7_menu.add(combo_7_select);
+    //group_7_menu.add(file_7_select);
     
-    group_8_menu.add(combo_select);
-    group_8_menu.add(file_select);
+    //group_8_menu.add(combo_8_select);
+    //group_8_menu.add(file_8_select);
     
-    group_9_menu.add(combo_select);
-    group_9_menu.add(file_select);
+    //group_9_menu.add(combo_9_select);
+    //group_9_menu.add(file_9_select);
     
     new_file.addActionListener(new NewFileListener());
     open_file.addActionListener(new OpenListener());
@@ -122,9 +146,14 @@ public class Menu_Bar {
     shape_border.addActionListener(new ChangeBorderListener());
     label_show.addItemListener(new ChangelabelShowListener());
     
+    combo_select.addActionListener(new IconSelectListener());
+    file_select.addActionListener(new FileSelectListener());
     
-    combo_select.addItemListener()
-    file_select.addItemListener();
+  //  combo_0_select.addActionListener();
+    //group_0_menu.addActionListener();
+    
+    //combo_select.addItemListener()
+    //file_select.addActionListener(new OpenIconListener());
      //increase_font_size.addActionListener(new IncreaseSizeListener());
      //decrease_font_size.addActionListener(new DecreaseSizeListener());
      

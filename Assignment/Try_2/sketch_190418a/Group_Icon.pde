@@ -4,15 +4,17 @@
 
   void intializeGroupIconTypes()
   {
-      groupIconType = new ArrayList<String>();
-     // groupIconType.add("empty");
-     // groupIconType.add("default");
-      groupIconType.add("circle");
-      groupIconType.add("square");
-      groupIconType.add("C:/Users/pc-user/Documents/University/Repos/Computer Graphics/Assignment/Try_2/Sketch_190418a/data/clockworkorange.jpg");
-      groupIconType.add("dynamic");
-      groupIconType.add("dynamic");
-      groupIconType.add("dynamic");
+    groupIconType = new String[10];
+    groupIconType[0] = "circle";
+    groupIconType[1] = "square";
+    groupIconType[2] = "dynamic";
+    groupIconType[3] = "C:/Users/pc-user/Documents/University/Repos/Computer Graphics/Assignment/Try_2/Sketch_190418a/data/clockworkorange.jpg";
+    groupIconType[4] = "C:/Users/pc-user/Documents/University/Repos/Computer Graphics/Assignment/Try_2/sketch_190418a/data/baseball.jpg";
+    groupIconType[5] = "dynamic";
+    groupIconType[6] = "dynamic";
+    groupIconType[7] = "dynamic";
+    groupIconType[8] = "dynamic";
+    groupIconType[9] = "dynamic";
   }
 
   //void getObject()
@@ -62,6 +64,8 @@
                    items[j] = groupIconType.get(j);
                add(new JComboBox(items));
             }
+            
+            
           
         }
       

@@ -193,21 +193,71 @@ class ChangelabelShowListener implements ItemListener
 }
 
 
-class OpenIconListener implements ActionListener
+
+class IconSelectListener implements ActionListener
 {
   void actionPerformed(ActionEvent e)
   {
-    println("select thigns");
-  //  selectInput("Open data file ", "openSelectedIcon");
+    Object[] groupIndex = { "0", "1", "2" , "3" ,"4", "5", "6" ,"7", "8","9" };
+    Object selection = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
+        "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
+    int index = int(selection.toString());
+    
+    Object[] groupType = { "circle", "square", "dynamaic" };
+    selection = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
+        "Group Type", JOptionPane.QUESTION_MESSAGE, null, groupType, "circle");
+    
+     groupIconType[index] = selection.toString();
+  }
+}
+
+
+String imageDir = new String();
+class FileSelectListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
+  {
+    Object[] groupIndex = { "0", "1", "2" , "3" ,"4", "5", "6" ,"7", "8","9" };
+    Object selection = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
+        "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
+    int index = int(selection.toString());
+    
+    selectInput("Open data file ", "openSelectedIcon");
+    
+     groupIconType[index] = imageDir;
+     
+     for(int i =0 ; i  < 10; i++)
+     {
+       println(groupIconType[i]);
+     }
+     
   }
 }
 
 void openSelectedIcon(File selection) {
+  
   if (selection != null)
   {
-      //selection;
-    //  println(selection);
-    //  grid.loadItems();
+      imageDir = selection.getAbsolutePath();
+      String temp = new String("");
+      for (int i = 0; i < imageDir.length(); i++)
+      {
+         if(imageDir.charAt(i) == '\\')
+         {
+          temp += '/';
+         }
+         else
+         {
+          temp += imageDir.charAt(i);
+         }
+      }
+      imageDir = temp;
+      println(imageDir);
+      
+  }
+  else
+  {
+    imageDir = "circle";
   }
 }
 
