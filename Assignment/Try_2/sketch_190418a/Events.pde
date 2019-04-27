@@ -64,30 +64,27 @@ class NewFileListener implements ActionListener
     currentFile = new  File(sketchPath("/data")+"/data" + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + second() +".csv"); 
     createOutput(currentFile);
      gridEmpty = true;
- //   selectInput("Select a file to write to:", "createNewFile", newFile);
   }
 }
 
 boolean createNewFile(File selection)
 {
     if (selection == null) {
-        println("what");
         return false;
   } else {
-   // println(selection);
     createOutput(selection);
     return true;
   }
   
 }
 
-void fileSelected(File selection) {
-  if (selection == null) {
-    println("Window was closed or the user hit cancel.");
-  } else {
-    println("User selected " + selection.getAbsolutePath());
-  }
-}
+//void fileSelected(File selection) {
+//  if (selection == null) {
+//    println("Window was closed or the user hit cancel.");
+//  } else {
+//    println("User selected " + selection.getAbsolutePath());
+//  }
+//}
 
 
 class OpenListener implements ActionListener
@@ -102,28 +99,29 @@ void openSelectedFile(File selection) {
   if (selection != null)
   {
       currentFile = selection;
+      println(selection);
       grid.loadItems();
   }
 }
 
 class SaveListener implements ActionListener
 {
-  void actionPerformed(ActionEvent e)
-  {
-    grid.saveItems();
-  }
+    void actionPerformed(ActionEvent e)
+    {
+        grid.saveItems();
+    }
 }
 class SaveAsListener implements ActionListener
 {
-  void actionPerformed(ActionEvent e)
-  {
-    selectOutput("Save File As" , "saveAsSelectedFile", currentFile);
-  }
+    void actionPerformed(ActionEvent e)
+    {
+        selectOutput("Save File As" , "saveAsSelectedFile", currentFile);
+    }
 }
 
 void saveAsSelectedFile(File selection)
 {
-    if (selection != null)
+  if (selection != null)
   {
       currentFile = selection;
       grid.saveItems();
@@ -138,31 +136,107 @@ class ExitListener implements ActionListener
   }
 }
 
+
+class ChangeFillListener implements ItemListener
+{
+  void itemStateChanged(ItemEvent e)
+  {
+    if (e.getStateChange() == 2)
+    {
+        grid.fill = false; 
+        grid.updateDataItemsDrawSettings();
+    }
+    else if (e.getStateChange() == 1)
+    {
+         grid.fill = true; 
+         grid.updateDataItemsDrawSettings();
+         
+    }
+  }
+}
+
+//check if string is all Numbers and not empty
+// Update all dataItems to have new border (strokeWieght)
+class ChangeBorderListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
+  {
+    String result = JOptionPane.showInputDialog(frame, "Please enter a boder size");
+    String[][] m ;
+    m = matchAll(result, "[0-9]");
+
+    if(m != null && m.length == result.length() )
+    {
+        grid.stroke = int(result);
+        grid.updateDataItemsDrawSettings();
+    }
+  }
+}
+
+class ChangelabelShowListener implements ItemListener
+{
+  
+  void itemStateChanged(ItemEvent e)
+  {
+    println(e.getStateChange());
+        if (e.getStateChange() == 2)
+    {
+        grid.label = false; 
+        grid.updateDataItemsDrawSettings();
+    }
+    else if (e.getStateChange() == 1)
+    {
+         grid.label = true; 
+         grid.updateDataItemsDrawSettings();
+    }
+  }
+}
+
+
+class OpenIconListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
+  {
+    println("select thigns");
+  //  selectInput("Open data file ", "openSelectedIcon");
+  }
+}
+
+void openSelectedIcon(File selection) {
+  if (selection != null)
+  {
+      //selection;
+    //  println(selection);
+    //  grid.loadItems();
+  }
+}
+
+
+ // This method is called after the component's size changes
 class resizeListener implements ComponentListener 
 {  
-        // This method is called after the component's size changes
-       void componentResized(ComponentEvent evt) {
-            Component c = (Component)evt.getSource();
+   
+     void componentResized(ComponentEvent evt) 
+     {
+         Component c = (Component)evt.getSource();
+         Dimension newSize = c.getSize();
+         println(newSize);
+         grid.resizeGrid();
+     }
     
-            // Get new size
-            Dimension newSize = c.getSize();
-           println(newSize);
-           grid.resizeGrid();
-        }
-        
-        void  componentMoved(ComponentEvent evt)
-        {
-          
-        }
-        void  componentShown(ComponentEvent evt)
-        {
-          
-        }
-        
-        void  componentHidden(ComponentEvent evt)
-        {
-          
-        }
-        
+    void  componentMoved(ComponentEvent evt)
+    {
+    
+    }
+    void  componentShown(ComponentEvent evt)
+    {
+    
+    }
+    
+    void  componentHidden(ComponentEvent evt)
+    {
+    
+    }
+  
         
 }

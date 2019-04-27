@@ -23,12 +23,14 @@ class Grid
  DataItem[] dataItems;
  int itemHover;
  //Hover_Menu hoverMenu;
- 
+ int stroke;
+ boolean fill;
+ boolean label;
  Grid()
  {
    x = width / 10;
    y = height / 10;
-   textSize = width / 50;
+   textSize = int(   sqrt(width * height) / 50);
    xspread = 1000;
    xmin = 0;
    yspread = 1000;
@@ -37,7 +39,9 @@ class Grid
    h = height - y - y;
    xunit =  w / 100;
    yunit =  h / 100;
-   dataTable = new Table();
+   stroke = 0;
+   fill = true;
+   label = true;
  //  loadItems();
   // clearSelectedItems();
   // hoverMenu = new Hover_Menu(xunit, yunit ,textSize);
@@ -63,9 +67,10 @@ class Grid
  
  void drawGrid()
  {
+   stroke(1);
    fill(255);
    rect(x,y,w,h);
-    line(x , y + h,x+  w , y + h);
+   line(x , y + h,x+  w , y + h);
    for(int i = 0; i <= 100; i += 10)
    {
      line(x + (i * xunit), y + h, x + (i * xunit), y + h + (2 * yunit));
@@ -101,9 +106,13 @@ class Grid
    {
     for (int i = 0 ; i < dataItems.length; i++)
     {
-    
-      shape(dataItems[i].itemShape, map(dataItems[i].x ,xmin , xspread, x, x + w), 
-      map(dataItems[i].y , ymin, yspread, y + h, y));
+      dataItems[i].display(xmin, ymin, xspread, yspread, x, y, w ,h);
+      //shape(dataItems[i].itemShape, map(dataItems[i].x ,xmin , xspread, x, x + w), 
+      //map(dataItems[i].y , ymin, yspread, y + h, y));
+      //textSize(10);
+      //textAlign(CENTER, TOP);
+      //text(dataItems[i].name, map(dataItems[i].x ,xmin , xspread, x, x + w), 
+      //map(dataItems[i].y , ymin, yspread, y + h, y));
     }
    };
    
@@ -123,21 +132,28 @@ class Grid
             println(xx);
             float yy = row.getFloat("Y");
             println(yy);
-            int grp = row.getInt("Group")  +1;
+            int grp = row.getInt("Group")  +1 ;
             int yr = row.getInt("Year of Birth");
-            int grd = row.getInt("Grade");
+            int grd = (row.getInt("Grade") + 1);
             
-            if ( grp == 1)
+            
+            
+        //   println(groupIconType.get(grp -1) , grp);
+            if (groupIconType.get(grp -1).equals("circle"))
             {
-               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit);
+               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit, stroke , fill, label);
             }
-            else if (grp == 2)
+            else if (groupIconType.get(grp -1 ).equals("square"))
             {
-               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit);
+               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label);
+            }
+            else if (groupIconType.get(grp -1).equals("dynamic"))
+            {
+               dataItems[index] = new dynamicDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label);
             }
             else
             {
-               dataItems[index] = new dynamicDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit);
+                dataItems[index] = new imageDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label , groupIconType.get(grp -1) );
             }
             println(dataItems[index]);
             
@@ -165,14 +181,14 @@ class Grid
             newRow.setString("Name", dataItems[i].name);
             newRow.setInt("X", int(dataItems[i].x));
             newRow.setInt("Y", int(dataItems[i].y));
-            newRow.setInt("Group", dataItems[i].group - 1);
+            newRow.setInt("Group", dataItems[i].group -1);
             newRow.setString("Gender", dataItems[i].gender);
             newRow.setInt("Year of Birth", dataItems[i].year);
-            newRow.setInt("Grade", dataItems[i].grade);
+            newRow.setInt("Grade", dataItems[i].grade - 1);
         }
       
         
-        saveTable(dataTable, currentFile.getAbsolutePath());
+        saveTable(dataTable, currentFile.getAbsolutePath()+".csv");
     };
     
     void checkHover()
@@ -288,4 +304,18 @@ class Grid
             ret++;
        return ret;
     }
+    
+    void updateDataItemsDrawSettings()
+    {
+        for (int i = 0 ; i < dataItems.length; i++)
+        {
+              grid.dataItems[i].drawOptionFill = fill;
+              grid.dataItems[i].drawOptionStrokeWeight = stroke;
+              grid.dataItems[i].drawOptionShowLabel = label;
+              grid.dataItems[i].updateShape();
+        }
+    }
+    
+    
+    
 };

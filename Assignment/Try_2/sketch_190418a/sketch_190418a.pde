@@ -3,10 +3,12 @@ Menu_Bar mp;
 File currentFile;
 boolean gridEmpty = true;
 Grid grid;
+ArrayList<String> groupIconType;
 void setup()
 {
   size(1000,1000);
   surface.setResizable(true);
+  
   buildMenuBar();
   yearColor = new color[10];
   yearColor[0] = color(255,102,102);
@@ -19,8 +21,8 @@ void setup()
   yearColor[7] = color(102,255,102);
   yearColor[8] = color(102,255,255);
   yearColor[9] = color(0,0,255);
-  
-  
+  intializeGroupIconTypes();
+   new groupIconDialouge();
    selectInput("Open data file ", "openSelectedFile");
    grid = new Grid();
 };
