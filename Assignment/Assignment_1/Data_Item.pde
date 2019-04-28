@@ -1,14 +1,9 @@
 
-int getSide(PVector A, PVector B, PVector C)
-{
-  
-  return int((B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x));
-}
+
 
 
 abstract class DataItem 
 {
-private
   String name;
   String gender;
   float x;
@@ -16,12 +11,18 @@ private
   int group;
   int year;
   int grade;
-  int rad;
-  int fillColor;
-  int borderThickness;
+  
   PShape itemShape;
-public
-  DataItem(String n, String g, float xx, float yy, int grp, int yr, int grd) 
+  int rad;
+  float itemScale;
+  boolean selected;
+  
+  color fillColor;
+  int drawOptionStrokeWeight;
+  boolean drawOptionFill;
+  boolean drawOptionShowLabel;
+
+  DataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale) 
   {
    name = n;
    gender = g;
@@ -30,178 +31,202 @@ public
    group = grp;
    year = yr;
    grade = grd;
-   rad = int(grade *  innerScale);
-   fillColor = color(  255 + ((year - 2000) *  -51  ),0 + ((year - 2000) *  51  ) ,0  );
+   
+   itemScale = sqrt(scale);
+   rad = int(grade * itemScale);
+   selected = false;
+   
+   fillColor = color(settings.yearColor[year - 2000]);
+   drawOptionStrokeWeight = settings.stroke;
+   drawOptionFill = settings.fill;
+   drawOptionShowLabel = settings.label;
+   
+   itemShape = createShape(GROUP);
   };
-  void updateSize(int grd)
+  void updateSize(float scale)
   {
-      grade = grd;
-      rad = int(grade *  innerScale);
+    itemScale = sqrt(scale);
+    rad = int(grade *  itemScale);
+    updateShape();
+  }
+  
+  void increaseSize()
+  {
+      grade++;
+      rad = int(grade *  itemScale);
+      updateShape();
+  }
+  
+  void decreaseSize()
+  {
+    if(grade > 1)
+      grade--;
+     rad = int(grade *  itemScale);
+     updateShape();
   }
   void updatePosition(float xx, float yy)
   {
        x = xx;
        y = yy;
   }
-  void display() {};
-  boolean isInside(int pointX, int pointY) {return false;};
-  int getSide(PVector A, PVector B, PVector C)
+  boolean isInside(float pointX, float pointY) {return false;};
+  void updateShape(){};
+    
+  void updateColor()
   {
-    return int(((B.x + x ) - (A.x + x)) * (C.y - (A.y + y)) - ((B.y + y) - (A.y + y)) * (C.x - (A.x + x)));
-  }
-  void displayName()
-  {
-     textFont(smallfont);
-     textAlign(CENTER, TOP);
-     fill(0);
-     textSize(int(2* scale));
-     text(name, x, y + rad); 
+     for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+     {
+            itemShape.getChild(i).setFill(drawOptionFill);
+     }
+     
+     if(selected)
+     {
+          for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            itemShape.getChild(i).setFill(color(0,0, 255,120));
+          }
+     }
+     else
+     {
+         for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            itemShape.getChild(i).setFill(fillColor);
+          }
+     } 
+      
   }
   
-  
-  void displayInfo()
+  void updateOutline()
   {
-     fill(0,200);
-     rect(x, y - 50, 50,50);
-      fill(255);
-     textFont(smallfont);
-     textSize(12);
-     textAlign(LEFT,TOP);
-     text("X " + int(x),x, y - 48 );
-     text("Y " + int(  y),x, y - 38 );
-      text("Y " + (gridHeight - (y - gridYOffset)  )  ,x, y - 28 );
-      // - offset
-      // add gridHigh - (girdhigh - y)   
-     // float yy = gridYOffset + (gridHeight - (gridHeight * (row.getFloat("Y") / 1000)));
+          for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            if (drawOptionStrokeWeight > 0)
+              itemShape.getChild(i).setStrokeWeight(drawOptionStrokeWeight);
+            else
+              itemShape.getChild(i).setStroke(false);
+          }
   }
+  
+  void removeChildren()
+  {
+           for (int i = itemShape.getChildCount() -1 ; i >=0 ;i-- )
+          {
+            itemShape.removeChild(i);
+          }
+    
+  }
+  float getSide(PVector A, PVector B, PVector C)
+  {
+    return ((B.x + x ) - (A.x + x)) * (C.y - (A.y + y)) - ((B.y + y) - (A.y + y)) * (C.x - (A.x + x));
+  }
+  
+  void display(float xmin, float ymin, float xs, float ys, float xx, float yy, float w, float h)
+  {
+    //translate x and y to grid coords
+     float posX = map(x ,xmin , xs, xx, xx + w);
+     float posY = map(y , ymin, ys, yy + h, yy);
+    shape(itemShape, posX , posY);
+    
+    if(drawOptionShowLabel)
+    {
+        textAlign(CENTER, TOP);
+        textSize(width / 100);
+        text(name, posX , posY + rad);
+    }
+  }
+  
+
+
 };
 
 
 class squareDataItem extends DataItem
 {
   PVector points[];
-  squareDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd)
+  squareDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale)
   {
-   super(n,  g, xx, yy, grp,  yr,grd); 
-   itemShape = createShape();
+   super(n,  g, xx, yy, grp,  yr,grd, scale); 
+   
    points = new PVector[4];
    updateShape();
   }
   
-   @Override
-  void updateSize(int grd)
-  {
-      grade = grd;
-      rad = int(grade *  innerScale);
-      updateShape();
-  }
-  
+
+  @Override
   void updateShape()
   {
+    removeChildren();
     points[0] = new PVector(0 - rad, 0 - rad);
     points[1] = new PVector(0 - rad, 0 + rad);
     points[2] = new PVector(0 + rad, 0 + rad);
     points[3] = new PVector(0 + rad, 0 - rad);
-   
-    itemShape.beginShape();
-    itemShape.fill(fillColor);
+    PShape groupShape = createShape();
+    groupShape.beginShape();
+
     for (int i = 0; i < 4 ; i++)
     {
-        itemShape.vertex(points[i].x,  points[i].y);
+        groupShape.vertex(points[i].x,  points[i].y);
     }
-    itemShape.endShape(CLOSE);
-  
+    groupShape.endShape(CLOSE);
+    
+      if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateColor();
+    updateOutline();
   } 
   
   @Override
-  void display()
-  {  
-    shape(itemShape, x ,y );
-     displayName();
-  }
-  
-  @Override
-  boolean isInside(int pointX, int pointY)
+  boolean isInside(float pointX, float pointY)
   {
         PVector P = new PVector(pointX, pointY);
         
             for (int i = 0; i < 4 ; i++)
             {
-             //  println(points[i].x + x , points[i].y + y, points[(i + 1) % 4].x + x , points[(i + 1) % 4].y + y, P);
-                 //println("A");
-                 //println(points[0].x + x , points[0].y + y, points[1].x + x , points[1].y + y, P);
-                 //println(getSide(points[0], points[1], P));
-                 //println(getSide(points[1], points[0], P));
-                 //println("B");
-                 //println(points[1].x + x , points[1].y + y, points[2].x + x , points[2].y + y, P);
-                 //println(getSide(points[1], points[2], P));
-                 //println(getSide(points[2], points[1], P));
-                 //println("C");
-                 //println(points[2].x + x , points[2].y + y, points[3].x + x , points[3].y + y, P);
-                 //println(getSide(points[2], points[3], P));
-                 //println(getSide(points[3], points[2], P));
-                 //println("D");
-                 //println(points[3].x + x , points[3].y + y, points[0].x + x , points[0].y + y, P);
-                 //println(getSide(points[3], points[0], P));
-                 //println(getSide(points[0], points[3], P));
-              
+               
                if ( getSide(points[i], points[(i + 1 )% 4], P) >= 0)
-               {
-                  // println(false);
-                   return false;
-               }
-            //println(points[i].x + x , points[i].y + y, points[(i + 1) % 4].x + x , points[(i + 1) % 4].y + y, P);
-   
-       //       println(getSide(points[i], points[i + 1 % 4], P));
-           //     if ( getSide(points[i], points[i + 1 % 4], P) >= 0)
-              //  {
-           //      //  println(false);
-               //    return false;
-            //    }
+                     return false;
             }
-      //  println(true);
         return true;
   };
   
 };
 
 
+
+
 class circleDataItem extends DataItem
 {
-  circleDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd)
+  circleDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale)
   {
-     super(n,  g, xx, yy, grp,  yr,grd);
-     updateSize(grd);
+     super(n,  g, xx, yy, grp,  yr,grd , scale);
+     updateShape();
   }
   
-  void updateSize(int grd)
-  {
-      grade = grd;
-      rad = int(grade * innerScale * 0.85);
-      updateShape();
-  }
-  
+
+  @Override
   void updateShape()
   {
-    itemShape = createShape(ELLIPSE,0,0,rad*2,rad*2);
-    itemShape.setFill(fillColor);
+    removeChildren();
+    PShape groupShape = createShape(ELLIPSE,0,0,rad*2,rad*2);
+    if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateColor();
+    updateOutline();
   } 
   
   @Override
-  void display()
-  {
-      shape(itemShape, x ,y);
-       displayName();
-  }
-  
-  
-  @Override
-  boolean isInside(int pointX, int pointY)
+  boolean isInside(float pointX, float pointY)
   {
     float d = (pointX -x)*(pointX -x) + (pointY -y)*(pointY -y);d = sqrt(d);
-  //  println(d < rad);
     return d < rad;
-    
   }
   
 };
@@ -212,204 +237,166 @@ class dynamicDataItem extends DataItem
   PVector points[];
   float angle;
   
-  dynamicDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd)
+  dynamicDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale)
   {
-    super(n, g, xx, yy, grp, yr,grd); 
-    points = new PVector[group];
-    angle = TWO_PI/group;
-    rad = int(grade *  innerScale * 1.25);
-    itemShape = createShape();
+    super(n, g, xx, yy, grp, yr,grd , scale); 
+    points = new PVector[group + 3];
+    angle = TWO_PI/(group+3);
+    rad = int(grade *  itemScale);
     updateShape();
-     
-  }
-  @Override
-  void updateSize(int grd)
-  {
-      grade = grd;
-      rad = int(grade *  innerScale * 1.25);
-      updateShape();
   }
   
+  @Override
   void updateShape()
   {
-    for (int i = 0; i < group ; i++)
+    removeChildren();
+    for (int i = 0; i < (group + 3) ; i++)
     {
       points[i] = new PVector((rad * cos(angle * i)),( rad * sin(angle * i)));
     }
+    PShape groupShape = createShape();
+    groupShape.beginShape();
     
-     
-    itemShape.beginShape();
-    itemShape.fill(fillColor);
-    for (int i = 0; i < group ; i++)
+    for (int i = 0; i <(group + 3) ; i++)
     {
-        itemShape.vertex(points[i].x,  points[i].y);
+       groupShape.vertex(points[i].x,  points[i].y);
     }
-    itemShape.endShape(CLOSE);
+    groupShape.endShape(CLOSE);
+   
+      if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateColor();
+    updateOutline();
    
   }
   
   @Override
-  void display()
-  {
-      shape(itemShape,x,y);
-       displayName();
-  }
-  @Override
-  boolean isInside(int pointX, int pointY)
+  boolean isInside(float pointX, float pointY)
   {
         PVector P = new PVector(pointX, pointY);
-            for (int i = 0; i < group ; i++)
-            {
-
-                 //            println("A");
-                 //println(points[0].x + x , points[0].y + y, points[1].x + x , points[1].y + y, P);
-                 //println(getSide(points[0], points[1], P));
-                 //println(getSide(points[1], points[0], P));
-                 //println("B");
-                 //println(points[1].x + x , points[1].y + y, points[2].x + x , points[2].y + y, P);
-                 //println(getSide(points[1], points[2], P));
-                 //println(getSide(points[2], points[1], P));
-                 //println("C");
-                 //println(points[2].x + x , points[2].y + y, points[3].x + x , points[3].y + y, P);
-                 //println(getSide(points[2], points[3], P));
-                 //println(getSide(points[3], points[2], P));
-                 //println("D");
-                 //println(points[3].x + x , points[3].y + y, points[4].x + x , points[4].y + y, P);
-                 //println(getSide(points[3], points[4], P));
-                 //println(getSide(points[4], points[3], P));
-                 //println("E");
-                 //println(points[4].x + x , points[4].y + y, points[0].x + x , points[0].y + y, P);
-                 //println(getSide(points[4], points[0], P));
-                 //println(getSide(points[0], points[4], P));
-            
-                if ( getSide(points[i], points[(i+ 1) % group], P) < 0)
-                {
-              //     println(false);
+            for (int i = 0; i < (group + 3)  ; i++)
+                if ( getSide(points[i], points[(i+ 1) % (group+3)], P) < 1)
                    return false;
-                }
                 
-                
-                
-                
-                
-                
-                
-                
-            }
-      //  println(true);
         return true;
   };
   
 };
 
-
-
-
-
-//class triangleDataItem extends DataItem
-//{
-//  int r;
-//  PVector A;
-//  PVector B;
-//  PVector C;
+class imageDataItem extends DataItem
+{
+  PVector[] points;
+  PImage image;
+  String location;
+  imageDataItem(String n, String g, float xx, float yy, int grp, int yr, int grd, float scale, String dir)
+  {
+   super(n,  g, xx, yy, grp,  yr,grd, scale); 
+   location = dir;
+   points = new PVector[4];
+   updateShape();
+  }
   
-//  @Override
-//  void display()
-//  {
-//    r = grade * 12;
-//    A = new PVector(x, y -(2.0/3.0 * r));
-//    B = new PVector(x - (1.0/2.0 * r),y + (1.0/3.0 * r));
-//    C = new PVector(x + (1.0/2.0 * r),y + (1.0/3.0 * r));
-//    triangle(A.x, A.y,B.x ,B.y,C.x , C.y);
-//  }
-//  @Override
-//  boolean isInside(int pointX, int pointY)
-//  {
-//        float d = (pointX -x)*(pointX -x) + (pointY -y)*(pointY -y);d = sqrt(d);
-//        PVector P = new PVector(pointX, pointY);
-        
-//        return (d < r && getSide(A,B,P) < 0 && getSide(B,C,P) < 0 && getSide(C,A,P) < 0 );
-//  };
-  
-//};
-
-
-//class pentagonDataItem extends DataItem
-//{
-//  int r;
-//  PVector A;
-//  PVector B;
-//  PVector C;
-//  PVector D;
-//  PVector E;
-//  @Override
-//  void display()
-//  {
-//    r = grade * 6;
-//    A = new PVector(x, y - r);
-//    B = new PVector(x - (r + (1.0/3.0 * r)), y - (1.0/3.0 * r));
-//    C = new PVector(x - 1.0/2.0 * r,y + r);
-//    D = new PVector(x + 1.0/2.0 * r,y + r);
-//    E = new PVector(x + (r + (1.0/3.0 * r)), y - (1.0/3.0 * r));
-//    beginShape();
-//    vertex(A.x, A.y);
-//    vertex(B.x, B.y);
-//    vertex(C.x, C.y);
-//    vertex(D.x, D.y);
-//    vertex(E.x, E.y);
-//    endShape();
-//  }
-//  @Override
-//  boolean isInside(int pointX, int pointY)
-//  {
-//        float d = (pointX -x)*(pointX -x) + (pointY -y)*(pointY -y);d = sqrt(d);
-//        PVector P = new PVector(pointX, pointY);
-        
-//        return (d < r && getSide(A,B,P) < 0 && getSide(B,C,P) < 0 && getSide(C,A,P) < 0 )  ; 
-//  };
-  
-//};
-
-
-
-//class hexagonDataItem extends DataItem
-//{
-//  int r;
-//  PVector points[];
-//  PVector A;
-//  PVector B;
-//  PVector C;
-//  PVector D;
-//  PVector E;
-//  void updateShape()
-//  {
-//    r = grade * 6;
-//    float angle = TWO_PI/6;
-//    for (int i = 0; i < 6 ; i++)
-//    {
-//      points[i] = new PVector ( x + (r * cos(angle)* i),y + ( y * sin(angle)* i));
-//    }
-//  }
-  
-//  @Override
-//  void display()
-//  {
-//    updateShape();
+  @Override
+  void updateShape()
+  {
+    println("calling iamge constictor");
+    removeChildren();
+    points[0] = new PVector(0 - rad, 0 - rad);
+    points[1] = new PVector(0 - rad, 0 + rad);
+    points[2] = new PVector(0 + rad, 0 + rad);
+    points[3] = new PVector(0 + rad, 0 - rad);
     
-//    beginShape();
-//    for (int i = 0; i < 6 ; i++)
-//    {
-//        vertex(points[i].x,  points[i].y);
-//    }
-//    endShape();
-//  }
-//  @Override
-//  boolean isInside(int pointX, int pointY)
-//  {
-//        float d = (pointX -x)*(pointX -x) + (pointY -y)*(pointY -y);d = sqrt(d);
-//        PVector P = new PVector(pointX, pointY);
-        
-//        return (d < r && getSide(A,B,P) < 0 && getSide(B,C,P) < 0 && getSide(C,A,P) < 0 )  ; 
-//  };
+    PShape groupShape = createShape();
+    groupShape.beginShape();
+    for (int i = 0; i < 4 ; i++)
+    {
+        groupShape.vertex(points[i].x,  points[i].y);
+    }
+    groupShape.endShape(CLOSE);
+    
+      if(gender.equals("Male"))
+    {
+          PShape genderShape = createShape(RECT,-rad,-rad*1.5,rad*2,rad/4);
+          itemShape.addChild(genderShape);
+    }
+    itemShape.addChild(groupShape);
+    updateImage();
+    updateColor();
+    updateOutline();
+    
+  } 
   
-//};
+  void updateImage()
+  {
+   image = loadImage(location);
+   image.resize(rad*2,rad*2);
+  }
+  
+    @Override
+  boolean isInside(float pointX, float pointY)
+  {
+        PVector P = new PVector(pointX, pointY);
+        
+            for (int i = 0; i < 4 ; i++)
+            {
+               if ( getSide(points[i], points[(i + 1 )% 4], P) > -1)
+                     return false;
+            }
+        return true;
+  };
+  
+  //makes the main shape with no fil but gender shape as normal
+  @Override
+  void updateColor()
+  {
+       if(itemShape.getChildCount() > 1)
+       {
+          itemShape.getChild(0).setFill(drawOptionFill);
+          itemShape.getChild(0).setFill(fillColor);
+          itemShape.getChild(1).setFill(false);
+       }
+       else
+          itemShape.getChild(0).setFill(false);
+
+       
+      if(selected)
+      {
+           if(itemShape.getChildCount() > 1)
+           {
+              itemShape.getChild(0).setFill((color(0,0, 255,120)));
+              itemShape.getChild(1).setFill(true);
+              itemShape.getChild(1).setFill((color(0,0, 255,120)));
+           }
+           else
+           {
+              itemShape.getChild(0).setFill(true);
+              itemShape.getChild(0).setFill((color(0,0, 255,120)));
+           }
+      }
+  
+  }
+          
+  void display(float xmin, float ymin, float xs, float ys, float xx, float yy, float w, float h)
+  {
+    //translate x and y to grid coords
+     float posX = map(x ,xmin , xs, xx, xx + w);
+     float posY = map(y , ymin, ys, yy + h, yy);
+    image(image, posX, posY);
+    shape(itemShape, posX , posY);
+    
+    imageMode(CENTER);
+    if(drawOptionShowLabel)
+    {
+        textAlign(CENTER, TOP);
+        textSize(width / 100);
+        text(name, posX , posY + rad);
+    }
+  }
+  
+
+
+};
