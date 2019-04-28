@@ -21,7 +21,7 @@ class Grid
  float scale;
  Table dataTable;
  DataItem[] dataItems;
- int itemHover;
+ //int itemHover;
  //Hover_Menu hoverMenu;
  int stroke;
  boolean fill;
@@ -43,7 +43,7 @@ class Grid
    stroke = 0;
    fill = true;
    label = true;
- //  loadItems();
+ // thread( loadItems());
   // clearSelectedItems();
   // hoverMenu = new Hover_Menu(xunit, yunit ,textSize);
  };
@@ -62,7 +62,6 @@ class Grid
       dataItems[i].updateSize(xunit + yunit);
     }
   
-   
  }
  
  
@@ -108,6 +107,21 @@ class Grid
     for (int i = 0 ; i < dataItems.length; i++)
     {
       dataItems[i].display(xmin, ymin, xspread, yspread, x, y, w ,h);
+      
+      if(lastSelectedIndex != -1)
+      {
+        String info = "X: " + int(dataItems[lastSelectedIndex].x) + "\nY: " + int(dataItems[lastSelectedIndex].y) + 
+        "\nGender: " +dataItems[lastSelectedIndex].gender + "\nGrade: " +dataItems[lastSelectedIndex].grade+  
+        "\nGroup: " +dataItems[lastSelectedIndex].group + "\nYear: " + dataItems[lastSelectedIndex].year;
+        fill(255,100);
+         rect(mouseX, mouseY - 12*yunit, 10*xunit, 12*yunit);
+        
+         textSize(int(   sqrt(width * height) / 100));
+         textAlign(LEFT);
+        fill(0);
+         text(info,mouseX , mouseY - 12*yunit, 10*xunit, 12*yunit);
+      }
+      
       //shape(dataItems[i].itemShape, map(dataItems[i].x ,xmin , xspread, x, x + w), 
       //map(dataItems[i].y , ymin, yspread, y + h, y));
       //textSize(10);
@@ -196,33 +210,33 @@ class Grid
         }
       
         
-        saveTable(dataTable, currentFile.getAbsolutePath()+".csv");
+        saveTable(dataTable, currentFile.getAbsolutePath());
     };
     
-    void checkHover()
-    {
-      itemHover = -1;
-      for (int i = 0 ; i < dataItems.length; i++)
-        {
-           if( dataItems[i].isInside( map(mouseX , x, x + w ,xmin , xspread), 
-            map(mouseY , y + h, y, ymin, yspread)))
-            {
-              itemHover = i;
-            }
-        }
+    //void checkHover()
+    //{
+    //  itemHover = -1;
+    //  for (int i = 0 ; i < dataItems.length; i++)
+    //    {
+    //       if( dataItems[i].isInside( map(mouseX , x, x + w ,xmin , xspread), 
+    //        map(mouseY , y + h, y, ymin, yspread)))
+    //        {
+    //          itemHover = i;
+    //        }
+    //    }
         
-        if (itemHover != -1)
-        {
-          fill(120,120);
+    //    if (itemHover != -1)
+    //    {
+    //      fill(120,120);
           
-          text(nf(dataItems[itemHover].x , 0 , 1), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
-      map(dataItems[itemHover].y + (5 * yunit) , ymin, yspread, y + h, y));
-          text(nf(dataItems[itemHover].y, 0 , 1 ), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
-      map(dataItems[itemHover].y + (10 * yunit) , ymin, yspread, y + h, y));
-    //  dataItems[itemHover].selected = true;
-     // dataItems[itemHover].updateShape();
-        }
-    }
+    //      text(nf(dataItems[itemHover].x , 0 , 1), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
+    //  map(dataItems[itemHover].y + (5 * yunit) , ymin, yspread, y + h, y));
+    //      text(nf(dataItems[itemHover].y, 0 , 1 ), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
+    //  map(dataItems[itemHover].y + (10 * yunit) , ymin, yspread, y + h, y));
+    ////  dataItems[itemHover].selected = true;
+    // // dataItems[itemHover].updateShape();
+    //    }
+    //}
     
     
     void clearSelectedItems()
@@ -244,16 +258,10 @@ class Grid
             {
               dataItems[i].selected = true;
               dataItems[i].updateColor();
-              
-            //  xdiff =  map(mouseX, x, x + w ,xmin , xspread) - grid.dataItems[i].x;
-           //   ydiff =  map(mouseY, y + h, y, ymin, yspread) - grid.dataItems[i].y;
-               lastSelectedIndex = i;
-              
+              lastSelectedIndex = i;
               break;
             }
         }
-      //clickPosX = mouseX;
-        //clickPosY = mouseY;
     }
     
     

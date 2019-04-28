@@ -98,6 +98,7 @@ class OpenListener implements ActionListener
 void openSelectedFile(File selection) {
   if (selection != null)
   {
+       gridEmpty = true;
       currentFile = selection;
       println(selection);
       grid.loadItems();
@@ -123,7 +124,7 @@ void saveAsSelectedFile(File selection)
 {
   if (selection != null)
   {
-      currentFile = selection;
+      currentFile = selection ;
       grid.saveItems();
   }
 }
@@ -163,13 +164,21 @@ class ChangeBorderListener implements ActionListener
   {
     String result = JOptionPane.showInputDialog(frame, "Please enter a boder size");
     String[][] m ;
-    m = matchAll(result, "[0-9]");
-
-    if(m != null && m.length == result.length() )
+    
+    if(result != null)
     {
-        grid.stroke = int(result);
-        grid.updateDataItemsDrawSettings();
+      
+   
+        m = matchAll(result, "[0-9]");
+    
+        if(m != null && m.length == result.length() )
+        {
+            grid.stroke = int(result);
+            grid.updateDataItemsDrawSettings();
+        }
     }
+   
+
   }
 }
 
@@ -189,6 +198,48 @@ class ChangelabelShowListener implements ItemListener
          grid.label = true; 
          grid.updateDataItemsDrawSettings();
     }
+  }
+}
+
+
+class AdjustTintListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
+  {
+    color colorPick =  color(255);
+    int alpha;
+    Color jColor = new Color(255);
+    jColor  = JColorChooser.showDialog(null,"Java Color Chooser", jColor);
+    if(jColor!=null) 
+    {
+      println(jColor);
+      colorPick = jColor.getRGB();
+      alpha = jColor.getAlpha();
+      println(alpha);
+      tintColor = color(colorPick,alpha);
+    }
+
+  }
+}
+
+class AdjustFilterListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
+  {
+    Object[] filters = { "GRAY", "INVERT", "ERODE" , "DILATE" , "NONE" };
+    Object selection = JOptionPane.showInputDialog(null, "Apply which Filter",
+        "Group Icon", JOptionPane.QUESTION_MESSAGE, null, filters, "NONE");
+        
+    if(selection.equals("GRAY"))
+        filterType = GRAY;
+    else if(selection.equals("INVERT"))
+       filterType = INVERT;
+    else if(selection.equals("ERODE"))
+        filterType = ERODE;
+    else if(selection.equals("DILATE"))
+        filterType = DILATE;
+    else
+      filterType = -1;
   }
 }
 
@@ -217,20 +268,7 @@ class FileSelectListener implements ActionListener
 {
   void actionPerformed(ActionEvent e)
   {
-    Object[] groupIndex = { "0", "1", "2" , "3" ,"4", "5", "6" ,"7", "8","9" };
-    Object selection = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
-        "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
-    int index = int(selection.toString());
-    
     selectInput("Open data file ", "openSelectedIcon");
-    
-     groupIconType[index] = imageDir;
-     
-     for(int i =0 ; i  < 10; i++)
-     {
-       println(groupIconType[i]);
-     }
-     
   }
 }
 
@@ -238,6 +276,14 @@ void openSelectedIcon(File selection) {
   
   if (selection != null)
   {
+    
+        Object[] groupIndex = { "0", "1", "2" , "3" ,"4", "5", "6" ,"7", "8","9" };
+    Object selectionIndex = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
+        "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
+    int index = int(selectionIndex.toString());
+    
+     println(index);
+    
       imageDir = selection.getAbsolutePath();
       String temp = new String("");
       for (int i = 0; i < imageDir.length(); i++)
@@ -252,7 +298,12 @@ void openSelectedIcon(File selection) {
          }
       }
       imageDir = temp;
-      println(imageDir);
+     // println(imageDir);
+        groupIconType[index] = imageDir;
+           for(int i =0 ; i  < 10; i++)
+     {
+       println(groupIconType[i]);
+     }
       
   }
   else

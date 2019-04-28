@@ -4,6 +4,8 @@ File currentFile;
 boolean gridEmpty = true;
 Grid grid;
 String[] groupIconType;
+color tintColor;
+int filterType;
 void setup()
 {
   size(1000,1000);
@@ -21,22 +23,32 @@ void setup()
   yearColor[7] = color(102,255,102);
   yearColor[8] = color(102,255,255);
   yearColor[9] = color(0,0,255);
+  
+  tintColor = color(255,0);
+  filterType = -1;
+  
   intializeGroupIconTypes();
-   new groupIconDialouge();
-   selectInput("Open data file ", "openSelectedFile");
-   grid = new Grid();
+  new groupIconDialouge();
+  selectInput("Open data file ", "openSelectedFile");
+  grid = new Grid();
 };
 
 void draw()
 {
   background(135,206,250);
-
- grid.drawGrid();
+ 
     if (!gridEmpty)
     {
+          grid.drawGrid();
           grid.drawDataItems();
-          grid.checkHover();
+        //  grid.checkHover();
     }
-
+ if(filterType != -1)
+ {
+   filter(filterType);
+ }
+ 
+ fill(tintColor);
+ rect(0,0, width, height);
 
 };

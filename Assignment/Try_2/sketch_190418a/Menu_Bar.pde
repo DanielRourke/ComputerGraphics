@@ -66,6 +66,8 @@ public class Menu_Bar {
     JCheckBoxMenuItem shape_fill = new JCheckBoxMenuItem("Fill Shapes", true);
     JMenuItem shape_border = new JMenuItem("Border Size");
     JCheckBoxMenuItem label_show = new JCheckBoxMenuItem("Show Labels", true);
+    JMenuItem tint_adjust = new JMenuItem("Adjust Tint");
+    JMenuItem filter_apply = new JMenuItem("Apply Filter");
     
     
     JMenuItem combo_select = new JMenuItem("Select");
@@ -102,6 +104,8 @@ public class Menu_Bar {
     settings_menu.add(shape_fill);
     settings_menu.add(shape_border);
     settings_menu.add(label_show);
+    settings_menu.add(tint_adjust);
+    settings_menu.add(filter_apply);
     
     icons_menu.add(combo_select);
     icons_menu.add(file_select);
@@ -145,6 +149,8 @@ public class Menu_Bar {
     shape_fill.addItemListener(new ChangeFillListener());
     shape_border.addActionListener(new ChangeBorderListener());
     label_show.addItemListener(new ChangelabelShowListener());
+    tint_adjust.addActionListener(new AdjustTintListener());
+    filter_apply.addActionListener(new AdjustFilterListener());
     
     combo_select.addActionListener(new IconSelectListener());
     file_select.addActionListener(new FileSelectListener());

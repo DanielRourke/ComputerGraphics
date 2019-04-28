@@ -446,6 +446,9 @@ class imageDataItem extends DataItem
         textSize(width / 100);
         text(name, posX , posY + rad);
     }
+    
+    
+    
   }
   
 
