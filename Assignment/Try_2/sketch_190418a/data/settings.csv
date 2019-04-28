@@ -1,0 +1,11 @@
+yearColorR,yearColorG,yearColorB,yearColorA,tintColorR,tintColorG,tintColorB,tintColorA,groupIconType,stroke,fill,label,filterType
+255.0,102.0,102.0,255.0,85.0,158.0,87.0,58.0,circle,1,1,1,17
+255.0,0.0,0.0,255.0,,,,,square,,,,
+153.0,0.0,0.0,255.0,,,,,dynamic,,,,
+77.0,0.0,0.0,255.0,,,,,dynamic,,,,
+0.0,77.0,0.0,255.0,,,,,dynamic,,,,
+0.0,153.0,0.0,255.0,,,,,dynamic,,,,
+0.0,255.0,0.0,255.0,,,,,dynamic,,,,
+102.0,255.0,102.0,255.0,,,,,dynamic,,,,
+102.0,255.0,255.0,255.0,,,,,dynamic,,,,
+0.0,0.0,255.0,255.0,,,,,dynamic,,,,

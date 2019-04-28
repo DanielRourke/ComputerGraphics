@@ -1,13 +1,21 @@
 
 int lastSelectedIndex = -1;
 boolean mutipleSelected;
+
+
+  //if ctrl is pressed you can selected mutiple items
+  //if you right click you get a popupmenu;
 void mousePressed()
 {
-  if(keyIndex != 17)
-    {
-       grid.clearSelectedItems();
-    }
-    grid.addSelectedItem();
+
+   if(keyIndex != 17)
+           grid.clearSelectedItems();
+   
+   grid.addSelectedItem();
+   
+   if(mouseButton == RIGHT)
+        mp.popupmenu.show(mp.frame, mouseX, mouseY);
+
 }
 
 void mouseReleased()
@@ -61,9 +69,7 @@ class NewFileListener implements ActionListener
 {
   void actionPerformed(ActionEvent e)
   {
-    currentFile = new  File(sketchPath("/data")+"/data" + month() + "_" + day() + "_" + hour() + "_" + minute() + "_" + second() +".csv"); 
-    createOutput(currentFile);
-     gridEmpty = true;
+    grid.data = new Data(); 
   }
 }
 
@@ -78,15 +84,6 @@ boolean createNewFile(File selection)
   
 }
 
-//void fileSelected(File selection) {
-//  if (selection == null) {
-//    println("Window was closed or the user hit cancel.");
-//  } else {
-//    println("User selected " + selection.getAbsolutePath());
-//  }
-//}
-
-
 class OpenListener implements ActionListener
 {
   void actionPerformed(ActionEvent e)
@@ -98,10 +95,9 @@ class OpenListener implements ActionListener
 void openSelectedFile(File selection) {
   if (selection != null)
   {
-       gridEmpty = true;
-      currentFile = selection;
-      println(selection);
-      grid.loadItems();
+      grid.data.empty = true;
+      grid.data.loadData(selection);
+      grid.createDataItems();
   }
 }
 
@@ -109,14 +105,15 @@ class SaveListener implements ActionListener
 {
     void actionPerformed(ActionEvent e)
     {
-        grid.saveItems();
+        grid.updateData();
+        grid.data.saveData();
     }
 }
 class SaveAsListener implements ActionListener
 {
     void actionPerformed(ActionEvent e)
     {
-        selectOutput("Save File As" , "saveAsSelectedFile", currentFile);
+        selectOutput("Save File As" , "saveAsSelectedFile", grid.data.currentFile);
     }
 }
 
@@ -124,8 +121,8 @@ void saveAsSelectedFile(File selection)
 {
   if (selection != null)
   {
-      currentFile = selection ;
-      grid.saveItems();
+       grid.updateData();
+       grid.data.saveDataAs(selection);
   }
 }
 
@@ -144,12 +141,12 @@ class ChangeFillListener implements ItemListener
   {
     if (e.getStateChange() == 2)
     {
-        grid.fill = false; 
+        settings.fill = false; 
         grid.updateDataItemsDrawSettings();
     }
     else if (e.getStateChange() == 1)
     {
-         grid.fill = true; 
+         settings.fill = true; 
          grid.updateDataItemsDrawSettings();
          
     }
@@ -167,18 +164,14 @@ class ChangeBorderListener implements ActionListener
     
     if(result != null)
     {
-      
-   
-        m = matchAll(result, "[0-9]");
+           m = matchAll(result, "[0-9]");
     
         if(m != null && m.length == result.length() )
         {
-            grid.stroke = int(result);
+            settings.stroke = int(result);
             grid.updateDataItemsDrawSettings();
         }
     }
-   
-
   }
 }
 
@@ -190,12 +183,12 @@ class ChangelabelShowListener implements ItemListener
     println(e.getStateChange());
         if (e.getStateChange() == 2)
     {
-        grid.label = false; 
+        settings.label = false; 
         grid.updateDataItemsDrawSettings();
     }
     else if (e.getStateChange() == 1)
     {
-         grid.label = true; 
+         settings.label = true; 
          grid.updateDataItemsDrawSettings();
     }
   }
@@ -216,7 +209,7 @@ class AdjustTintListener implements ActionListener
       colorPick = jColor.getRGB();
       alpha = jColor.getAlpha();
       println(alpha);
-      tintColor = color(colorPick,alpha);
+      settings.tintColor = color(colorPick,alpha);
     }
 
   }
@@ -231,19 +224,33 @@ class AdjustFilterListener implements ActionListener
         "Group Icon", JOptionPane.QUESTION_MESSAGE, null, filters, "NONE");
         
     if(selection.equals("GRAY"))
-        filterType = GRAY;
+        settings.filterType = GRAY;
     else if(selection.equals("INVERT"))
-       filterType = INVERT;
+       settings.filterType = INVERT;
     else if(selection.equals("ERODE"))
-        filterType = ERODE;
+        settings.filterType = ERODE;
     else if(selection.equals("DILATE"))
-        filterType = DILATE;
+        settings.filterType = DILATE;
     else
-      filterType = -1;
+      settings.filterType = -1;
   }
 }
 
+class SaveSettingsListener implements ActionListener
+{
+    void actionPerformed(ActionEvent e)
+    {
+        settings.saveSettings();
+    }
+}
 
+class LoadSettingsListener implements ActionListener
+{
+    void actionPerformed(ActionEvent e)
+    {
+        settings.loadSettings();
+    }
+}
 
 class IconSelectListener implements ActionListener
 {
@@ -252,16 +259,20 @@ class IconSelectListener implements ActionListener
     Object[] groupIndex = { "0", "1", "2" , "3" ,"4", "5", "6" ,"7", "8","9" };
     Object selection = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
         "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
+        
+    if(selection == null)
+      return;
+    
     int index = int(selection.toString());
-    
-    Object[] groupType = { "circle", "square", "dynamaic" };
+        
     selection = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
-        "Group Type", JOptionPane.QUESTION_MESSAGE, null, groupType, "circle");
-    
-     groupIconType[index] = selection.toString();
+            "Group Type", JOptionPane.QUESTION_MESSAGE, null, settings.groupIconType, "circle");
+    if(selection == null)
+          return;
+          
+    settings.groupIconType[index] = selection.toString();
   }
 }
-
 
 String imageDir = new String();
 class FileSelectListener implements ActionListener
@@ -276,39 +287,55 @@ void openSelectedIcon(File selection) {
   
   if (selection != null)
   {
-    
         Object[] groupIndex = { "0", "1", "2" , "3" ,"4", "5", "6" ,"7", "8","9" };
-    Object selectionIndex = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
-        "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
-    int index = int(selectionIndex.toString());
-    
-     println(index);
-    
-      imageDir = selection.getAbsolutePath();
-      String temp = new String("");
-      for (int i = 0; i < imageDir.length(); i++)
-      {
-         if(imageDir.charAt(i) == '\\')
-         {
-          temp += '/';
+        Object selectionIndex = JOptionPane.showInputDialog(null, "Which Group Icon to Change?",
+            "Group Icon", JOptionPane.QUESTION_MESSAGE, null, groupIndex, "0");
+            
+        if(selectionIndex == null)
+          return;
+          
+        int index = int(selectionIndex.toString());
+        imageDir = selection.getAbsolutePath();
+        String temp = new String("");
+        for (int i = 0; i < imageDir.length(); i++)
+        {
+             if(imageDir.charAt(i) == '\\')
+             {
+              temp += '/';
+             }
+             else
+             {
+              temp += imageDir.charAt(i);
+             }
          }
-         else
+         imageDir = temp;
+         settings.groupIconType[index] = imageDir;
+         for(int i =0 ; i  < 10; i++)
          {
-          temp += imageDir.charAt(i);
+           println(settings.groupIconType[i]);
          }
-      }
-      imageDir = temp;
-     // println(imageDir);
-        groupIconType[index] = imageDir;
-           for(int i =0 ; i  < 10; i++)
-     {
-       println(groupIconType[i]);
-     }
-      
-  }
-  else
+          
+    }
+    else
+    {
+      imageDir = "circle";
+    }
+}
+
+
+class AddItemListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
   {
-    imageDir = "circle";
+    new InputFrame();
+  }
+}
+
+class DeleteItemListener implements ActionListener
+{
+  void actionPerformed(ActionEvent e)
+  {
+    grid.removeLastSelected();
   }
 }
 
@@ -316,13 +343,12 @@ void openSelectedIcon(File selection) {
  // This method is called after the component's size changes
 class resizeListener implements ComponentListener 
 {  
-   
      void componentResized(ComponentEvent evt) 
      {
-         Component c = (Component)evt.getSource();
-         Dimension newSize = c.getSize();
-         println(newSize);
-         grid.resizeGrid();
+         //Component c = (Component)evt.getSource();
+          // Dimension newSize = c.getSize();
+          // println(newSize);
+           grid.resizeGrid();
      }
     
     void  componentMoved(ComponentEvent evt)

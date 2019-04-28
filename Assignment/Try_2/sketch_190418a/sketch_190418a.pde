@@ -1,54 +1,37 @@
-color[] yearColor;
+ /*
+ DECLARATION
+ Daniel Rourke 19386993
+ I hold a copy of this assignment that I can produce if the original is lost or damaged.
+ 
+ I hereby certify that no part of this assignment/product has been copied from any other student’s 
+ work or from any other source except where due acknowledgement is made in the assignment.  
+ 
+ No part of this assignment/product has been written/produced for me by another person except
+ where such collaboration has been authorised by the subject lecturer/tutor concerned
+ 
+ */
+ 
+ 
+ 
+ import javax.swing.*;
+ import java.awt.*;
+ import java.awt.event.*;
+
+Settings settings;
 Menu_Bar mp;
-File currentFile;
-boolean gridEmpty = true;
 Grid grid;
-String[] groupIconType;
-color tintColor;
-int filterType;
 void setup()
 {
   size(1000,1000);
   surface.setResizable(true);
-  
-  buildMenuBar();
-  yearColor = new color[10];
-  yearColor[0] = color(255,102,102);
-  yearColor[1] = color(255,0,0);
-  yearColor[2] = color(153,0,0);
-  yearColor[3] = color(77,0,0);
-  yearColor[4] = color(0,77,0);
-  yearColor[5] = color(0,153,0);
-  yearColor[6] = color(0,255,0);
-  yearColor[7] = color(102,255,102);
-  yearColor[8] = color(102,255,255);
-  yearColor[9] = color(0,0,255);
-  
-  tintColor = color(255,0);
-  filterType = -1;
-  
-  intializeGroupIconTypes();
-  new groupIconDialouge();
-  selectInput("Open data file ", "openSelectedFile");
   grid = new Grid();
+  buildMenuBar();
+  settings = new Settings();
 };
 
 void draw()
 {
-  background(135,206,250);
- 
-    if (!gridEmpty)
-    {
-          grid.drawGrid();
-          grid.drawDataItems();
-        //  grid.checkHover();
-    }
- if(filterType != -1)
- {
-   filter(filterType);
- }
- 
- fill(tintColor);
- rect(0,0, width, height);
-
+    background(135,206,250);
+    grid.drawGrid();
+    settings.applyFilters();
 };

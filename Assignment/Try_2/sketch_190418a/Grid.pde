@@ -18,15 +18,11 @@ class Grid
  int textSize;
  String bottom = "X";
  String side = "Y";
- float scale;
- Table dataTable;
- DataItem[] dataItems;
- //int itemHover;
- //Hover_Menu hoverMenu;
- int stroke;
- boolean fill;
- boolean label;
- String[] headers;
+ 
+ ArrayList<DataItem> dataItems;
+ 
+ Data data;
+ 
  Grid()
  {
    x = width / 10;
@@ -40,12 +36,26 @@ class Grid
    h = height - y - y;
    xunit =  w / 100;
    yunit =  h / 100;
-   stroke = 0;
-   fill = true;
-   label = true;
- // thread( loadItems());
-  // clearSelectedItems();
-  // hoverMenu = new Hover_Menu(xunit, yunit ,textSize);
+   dataItems = new ArrayList<DataItem>();
+   data = new Data();
+ };
+ 
+  Grid(File file)
+ {
+   x = width / 10;
+   y = height / 10;
+   textSize = int(   sqrt(width * height) / 50);
+   xspread = 1000;
+   xmin = 0;
+   yspread = 1000;
+   ymin = 0;
+   w = width - x - x;
+   h = height - y - y;
+   xunit =  w / 100;
+   yunit =  h / 100;
+   dataItems = new ArrayList<DataItem>();
+   data = new Data(file);
+   createDataItems();
  };
  
  void resizeGrid()
@@ -57,13 +67,15 @@ class Grid
    h = height - y - y;
    xunit =  w / 100;
    yunit =  h / 100;
-    for (int i = 0 ; i < dataItems.length; i++)
-    {
-      dataItems[i].updateSize(xunit + yunit);
-    }
-  
+   if(dataItems.size() > 0)
+   {
+      for (int i = 0 ; i < dataItems.size(); i++)
+      {
+        dataItems.get(i).updateSize(xunit + yunit);
+      }
+   }
+
  }
- 
  
  void drawGrid()
  {
@@ -100,19 +112,25 @@ class Grid
    text(side,0,0);
    popMatrix();
    
+   
+   
+   if(dataItems.size() > 0)
+   {
+     drawDataItems();
+   }
  };
  
    void drawDataItems()
    {
-    for (int i = 0 ; i < dataItems.length; i++)
+    for (int i = 0 ; i < dataItems.size(); i++)
     {
-      dataItems[i].display(xmin, ymin, xspread, yspread, x, y, w ,h);
+      dataItems.get(i).display(xmin, ymin, xspread, yspread, x, y, w ,h);
       
       if(lastSelectedIndex != -1)
       {
-        String info = "X: " + int(dataItems[lastSelectedIndex].x) + "\nY: " + int(dataItems[lastSelectedIndex].y) + 
-        "\nGender: " +dataItems[lastSelectedIndex].gender + "\nGrade: " +dataItems[lastSelectedIndex].grade+  
-        "\nGroup: " +dataItems[lastSelectedIndex].group + "\nYear: " + dataItems[lastSelectedIndex].year;
+        String info = ("X: " + int(dataItems.get(lastSelectedIndex).x) + "\nY: " + int(dataItems.get(lastSelectedIndex).y) + 
+        "\nGender: " +dataItems.get(lastSelectedIndex).gender + "\nGrade: " +dataItems.get(lastSelectedIndex).grade+  
+        "\nGroup: " +dataItems.get(lastSelectedIndex).group + "\nYear: " + dataItems.get(lastSelectedIndex).year);
         fill(255,100);
          rect(mouseX, mouseY - 12*yunit, 10*xunit, 12*yunit);
         
@@ -121,143 +139,113 @@ class Grid
         fill(0);
          text(info,mouseX , mouseY - 12*yunit, 10*xunit, 12*yunit);
       }
-      
-      //shape(dataItems[i].itemShape, map(dataItems[i].x ,xmin , xspread, x, x + w), 
-      //map(dataItems[i].y , ymin, yspread, y + h, y));
-      //textSize(10);
-      //textAlign(CENTER, TOP);
-      //text(dataItems[i].name, map(dataItems[i].x ,xmin , xspread, x, x + w), 
-      //map(dataItems[i].y , ymin, yspread, y + h, y));
     }
    };
+
+   void removeLastSelected()
+   {
+     if (lastSelectedIndex != -1)
+         dataItems.remove(lastSelectedIndex);
+   }
    
-     void loadItems()
-    {
-        dataTable = loadTable(currentFile.getAbsolutePath(), "header");
-        println( dataTable.getRowCount() + " total rows in table"); 
-        
-        headers = new String[dataTable.getColumnCount()];
-        for (int i = 0; i < dataTable.getColumnCount(); i++)
-        {
-           headers[i] = dataTable.getColumnTitle(i);
-        }
-        
-        
-        dataItems = new DataItem[dataTable.getRowCount()];
-        int index = 0;
-    
-        for (TableRow row :  dataTable.rows()) 
-        {
-            String n = row.getString("Name");
-            String g = row.getString("Gender");
-            float xx = row.getFloat("X");
-            println(xx);
-            float yy = row.getFloat("Y");
-            println(yy);
-            int grp = row.getInt("Group")  +1 ;
-            int yr = row.getInt("Year of Birth");
-            int grd = (row.getInt("Grade") + 1);
-            
-            
-            
-        //   println(groupIconType.get(grp -1) , grp); //<>//
-            if (groupIconType[grp -1].equals("circle"))
+   void createDataItem(String n, String g,float xx, float yy,int grp, int yr,int grd)
+   { //<>//
+  
+            if (settings.groupIconType[grp].equals("circle"))
             {
-               dataItems[index] = new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit, stroke , fill, label);
+               dataItems.add(new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit));
             }
-            else if (groupIconType[grp -1].equals("square"))
+            else if (settings.groupIconType[grp].equals("square"))
             {
-               dataItems[index] = new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label);
+                dataItems.add(new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit));
             }
-            else if (groupIconType[grp -1].equals("dynamic"))
+            else if (settings.groupIconType[grp].equals("dynamic"))
             {
-               dataItems[index] = new dynamicDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label);
+               dataItems.add(new dynamicDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit));
             }
             else
             {
-                dataItems[index] = new imageDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, stroke, fill, label , groupIconType[grp -1] );
+                 dataItems.add( new imageDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, settings.groupIconType[grp] ));
             }
-            println(dataItems[index]);
-            
-            index++;   
-        }
-      gridEmpty = false;
-    };
-    
-    void saveItems()
+   }
+   void createDataItemOnMouse(String n, String g,int grp, int yr,int grd)
+   {
+          //convery mouse x y to grid relative x y
+           float xx = map(mouseX, x, x + w ,xmin , xspread);
+           float yy = map(mouseY, y + h, y, ymin, yspread);
+     
+            if (settings.groupIconType[grp].equals("circle"))
+            {
+               dataItems.add(new circleDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit));
+            }
+            else if (settings.groupIconType[grp].equals("square"))
+            {
+                dataItems.add(new squareDataItem(n,  g, xx, yy, grp, yr, grd, yunit + xunit));
+            }
+            else if (settings.groupIconType[grp].equals("dynamic"))
+            {
+               dataItems.add(new dynamicDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit));
+            }
+            else
+            {
+                 dataItems.add( new imageDataItem(n, g, xx, yy, grp, yr, grd, yunit + xunit, settings.groupIconType[grp] ));
+            }
+   }
+   
+     void createDataItems()
     {
-    
-         dataTable = new Table();
-         
-         dataTable.addColumn("Name");
-         dataTable.addColumn("X");
-         dataTable.addColumn("Y");
-         dataTable.addColumn("Group");
-         dataTable.addColumn("Gender");
-         dataTable.addColumn("Year of Birth");
-         dataTable.addColumn("Grade");
-
-        for (int i = 0; i <  dataItems.length ; i++)
-        {
-            TableRow newRow = dataTable.addRow();
-            newRow.setString("Name", dataItems[i].name);
-            newRow.setInt("X", int(dataItems[i].x));
-            newRow.setInt("Y", int(dataItems[i].y));
-            newRow.setInt("Group", dataItems[i].group -1);
-            newRow.setString("Gender", dataItems[i].gender);
-            newRow.setInt("Year of Birth", dataItems[i].year);
-            newRow.setInt("Grade", dataItems[i].grade - 1);
-        }
-      
-        
-        saveTable(dataTable, currentFile.getAbsolutePath());
+        dataItems.clear();
+        if(!data.empty)
+          for (TableRow row :  data.table.rows()) 
+            createDataItem(row.getString("Name"),row.getString("Gender"),row.getFloat("X"),row.getFloat("Y"),row.getInt("Group"),row.getInt("Year of Birth"),(row.getInt("Grade") + 1));
     };
     
-    //void checkHover()
-    //{
-    //  itemHover = -1;
-    //  for (int i = 0 ; i < dataItems.length; i++)
-    //    {
-    //       if( dataItems[i].isInside( map(mouseX , x, x + w ,xmin , xspread), 
-    //        map(mouseY , y + h, y, ymin, yspread)))
-    //        {
-    //          itemHover = i;
-    //        }
-    //    }
-        
-    //    if (itemHover != -1)
-    //    {
-    //      fill(120,120);
-          
-    //      text(nf(dataItems[itemHover].x , 0 , 1), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
-    //  map(dataItems[itemHover].y + (5 * yunit) , ymin, yspread, y + h, y));
-    //      text(nf(dataItems[itemHover].y, 0 , 1 ), map(dataItems[itemHover].x ,xmin , xspread, x, x + w), 
-    //  map(dataItems[itemHover].y + (10 * yunit) , ymin, yspread, y + h, y));
-    ////  dataItems[itemHover].selected = true;
-    // // dataItems[itemHover].updateShape();
-    //    }
-    //}
+    void updateData()
+    {
+         data.table = new Table();
+         
+         data.table.addColumn("Name");
+         data.table.addColumn("X");
+         data.table.addColumn("Y");
+         data.table.addColumn("Group");
+         data.table.addColumn("Gender");
+         data.table.addColumn("Year of Birth");
+         data.table.addColumn("Grade");
+
+        for (int i = 0; i <  dataItems.size(); i++)
+        {
+            TableRow newRow = data.table.addRow();
+            newRow.setString("Name", dataItems.get(i).name);
+            newRow.setInt("X", int(dataItems.get(i).x));
+            newRow.setInt("Y", int(dataItems.get(i).y));
+            newRow.setInt("Group", dataItems.get(i).group);
+            newRow.setString("Gender", dataItems.get(i).gender);
+            newRow.setInt("Year of Birth", dataItems.get(i).year);
+            newRow.setInt("Grade", dataItems.get(i).grade - 1);
+        }
+
+    };
     
     
     void clearSelectedItems()
     {
-       for (int i = 0; i < dataItems.length; i++)
+       for (int i = 0; i < dataItems.size(); i++)
        {
-         dataItems[i].selected = false;
-         dataItems[i].updateColor();
+         dataItems.get(i).selected = false;
+         dataItems.get(i).updateColor();
        }
            lastSelectedIndex = -1;
     }
     
     void addSelectedItem()
     {
-        for (int i = dataItems.length - 1; i >=0 ; i--)
+        for (int i = dataItems.size() - 1; i >=0 ; i--)
         {
-           if( dataItems[i].isInside( map(mouseX , x, x + w ,xmin , xspread), 
+           if( dataItems.get(i).isInside( map(mouseX , x, x + w ,xmin , xspread), 
             map(mouseY , y + h, y, ymin, yspread)))
             {
-              dataItems[i].selected = true;
-              dataItems[i].updateColor();
+              dataItems.get(i).selected = true;
+              dataItems.get(i).updateColor();
               lastSelectedIndex = i;
               break;
             }
@@ -267,22 +255,22 @@ class Grid
     
     void moveSelectedItems()
     {
-        println(lastSelectedIndex);
+        
         float xdiff = 0;
         float ydiff = 0;
         
         if(lastSelectedIndex != -1)
         {
-            xdiff = grid.dataItems[lastSelectedIndex].x;
-            ydiff = grid.dataItems[lastSelectedIndex].y;
+            xdiff = grid.dataItems.get(lastSelectedIndex).x;
+            ydiff = grid.dataItems.get(lastSelectedIndex).y;
         }
         
-        for (int i = 0 ; i < dataItems.length; i++)
+        for (int i = 0 ; i < dataItems.size(); i++)
         {
-          if (dataItems[i].selected)
+          if (dataItems.get(i).selected)
           {
-              grid.dataItems[i].x +=  map(mouseX, x, x + w ,xmin , xspread) - xdiff;
-              grid.dataItems[i].y +=  map(mouseY, y + h, y, ymin, yspread) - ydiff;
+              grid.dataItems.get(i).x +=  map(mouseX, x, x + w ,xmin , xspread) - xdiff;
+              grid.dataItems.get(i).y +=  map(mouseY, y + h, y, ymin, yspread) - ydiff;
              
           }
         }
@@ -290,11 +278,11 @@ class Grid
     
     void increaseSelectedItems()
     {
-        for (int i = 0 ; i < dataItems.length; i++)
+        for (int i = 0 ; i < dataItems.size(); i++)
         {
-          if (dataItems[i].selected)
+          if (dataItems.get(i).selected)
           {
-              grid.dataItems[i].increaseSize();
+              grid.dataItems.get(i).increaseSize();
              
           }
         }
@@ -302,11 +290,11 @@ class Grid
     
     void decreaseSelectedItems()
     {
-        for (int i = 0 ; i < dataItems.length; i++)
+        for (int i = 0 ; i < dataItems.size(); i++)
         {
-          if (dataItems[i].selected)
+          if (dataItems.get(i).selected)
           {
-              grid.dataItems[i].decreaseSize();
+              grid.dataItems.get(i).decreaseSize();
              
           }
         }
@@ -315,20 +303,20 @@ class Grid
     int countSelectedItems()
     {
       int ret = 0;
-        for (int i = 0 ; i < dataItems.length; i++)
-          if (dataItems[i].selected)
+        for (int i = 0 ; i < dataItems.size(); i++)
+          if (dataItems.get(i).selected)
             ret++;
        return ret;
     }
     
     void updateDataItemsDrawSettings()
     {
-        for (int i = 0 ; i < dataItems.length; i++)
+        for (int i = 0 ; i < dataItems.size(); i++)
         {
-              grid.dataItems[i].drawOptionFill = fill;
-              grid.dataItems[i].drawOptionStrokeWeight = stroke;
-              grid.dataItems[i].drawOptionShowLabel = label;
-              grid.dataItems[i].updateShape();
+              grid.dataItems.get(i).drawOptionFill = settings.fill;
+              grid.dataItems.get(i).drawOptionStrokeWeight = settings.stroke;
+              grid.dataItems.get(i).drawOptionShowLabel = settings.label;
+              grid.dataItems.get(i).updateShape();
         }
     }
     
