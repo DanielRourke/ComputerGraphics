@@ -67,3 +67,53 @@ fill(0,0,200 ); //draw a blue earth ball
 sphere(200); 
 
 }
+float orbitSpeed = TWO_PI/256;
+float angle3 = orbitSpeed;
+float shuttlePosX = -200;
+float shuttleSpeed = 0.5;
+
+void question5()
+{
+    noStroke();
+    pushMatrix();
+    rotateY(angle3);
+    translate(-width/2, 0, 0);
+    fill(100, 100, 100);//draw gray moon Ball
+    sphere(50);
+    popMatrix();
+    pushMatrix();
+    rotateY(angle3);
+    translate(shuttlePosX, 0, 50);
+    fill(200, 200 ,0);
+    box(25);
+    angle3 -= orbitSpeed;
+    if(shuttlePosX != -width/2)
+        shuttlePosX -= shuttleSpeed;
+    popMatrix();
+    fill(0,0,200 ); //draw a blue earth ball
+    sphere(200); 
+}
+
+
+void question6()
+{
+  /*Modify the last example in the lecture note 9 (Extrude and
+Image) so that all pixels are drawn inside a sphere. Y-coordinate values remain
+the same, x-coordinate values are distributed around a circle and z-coordinate
+values are calculated based on the average values of their RGB. If the average
+value is less than 127, the pixels are drawn at the negative half of the zcoordinate. Otherwise, the pixels are drawn at the positive half of the coordinate.
+Add animation to see the effect. You are also welcome to create various special
+effects of your choice.*/
+
+for ALL OF THE PIXELS
+  
+  
+  if(averageRGB(color pixel))
+    
+
+}
+
+int averageRGB(color c)
+{
+  return (int)((red(c) + green(c) + blue(c))/3);
+}
