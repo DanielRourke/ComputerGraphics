@@ -8,13 +8,14 @@ void setup()
 {
     size(800,800, P3D);
     //question1Setup();
-    question2Setup();
+   question2Setup();
+  
 }
-
 
 void draw()
 {
   background(0);
- // question1();
+ //question1();
   question2();
+ 
 }

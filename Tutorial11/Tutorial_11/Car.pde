@@ -3,7 +3,6 @@
 
 class Car extends Shape3D
 {
-  
     Shape3D parent;
     Box base;
     Box body;
@@ -13,24 +12,27 @@ class Car extends Shape3D
     color bodyColor;
     float bodySize;
     float wheelSize;
-  Car(PApplet app, color wColour, color bColour, float bSize, float wSize)
+    int position;
+  Car(PApplet app, color wColour, color bColour, float bSize, float wSize, int pos)
   {
+        super();
+        position = pos;
         //make base
-        // parent = new Box(app, 200 * bodySize,125 * bodySize,100 * bodySize);
+        parent = new Box(app,0,0,0);
         bodyColor = bColour;
         wheelColor = wColour;
         bodySize = bSize;
         wheelSize = wSize;
         base = new Box(app, 200 * bodySize,50 * bodySize,100 * bodySize);
         base.fill(bodyColor);
-        this.addShape(base);
+        parent.addShape(base);
         
         
         //make body
         body = new Box(app, 100 * bodySize, 50 * bodySize, 100 * bodySize);
         body.fill(bodyColor);
         body.moveTo(20 * bodySize, -45 * bodySize, 0);
-        this.addShape(body);
+        parent.addShape(body);
         
         //make wheels
         wheels = new Toroid[4];
@@ -50,10 +52,10 @@ class Car extends Shape3D
           wheels[2].rotateBy(radians(90), 0, 0);
           wheels[3].moveTo(75* wheelSize, 35* wheelSize, -60* wheelSize);
           wheels[3].rotateBy(radians(90), 0, 0);
-          this.addShape(wheels[0]);
-          this.addShape(wheels[1]);
-          this.addShape(wheels[2]);
-          this.addShape(wheels[3]);
+          parent.addShape(wheels[0]);
+          parent.addShape(wheels[1]);
+          parent.addShape(wheels[2]);
+          parent.addShape(wheels[3]);
           
 
           //make windshield
@@ -64,18 +66,35 @@ class Car extends Shape3D
           windshield.drawMode(Shape3D.ALL);
           windshield.fill(bodyColor,Tube.S_CAP);
           windshield.fill(bodyColor,Tube.E_CAP);
-          this.addShape(windshield);
+          parent.addShape(windshield);
        
-                  
+         this.addShape(parent);         
                   
                   
        // this.fill(bodyColor);
-       moveTo(width/2,height/2,-800);
-         
+       moveTo(start[position].x, start[position].y,start[position].z);
+       parent.moveTo(start[position]);
   }
-  public void test()
+  public void drive()
   {
-    
+      if(parent.x() != end[position].x)
+      {
+               moveBy(-1,0,0);
+       parent.moveBy(-1,0,0);
+      }
+      else
+      {
+         moveTo(start[position].x, start[position].y,start[position].z);
+       parent.moveTo(start[position]);
+      }
+
+  }
+  float fade = 255;
+  public void fade()
+  {
+     fade -= 0.50;
+     bodyColor = color (red(bodyColor),green(bodyColor),blue(bodyColor), fade);
+     resetColours();
   }
   
   public void setBodyColour(color bodyColor)
@@ -116,28 +135,29 @@ class Car extends Shape3D
        setWheelColour(col);
   }
   @Override
+  public void moveBy(float x, float y, float z)
+  {
+     
+        moveBy(new PVector(x,y,z));
+        parent.moveBy(x,y,z);
+    
+  }
+  @Override
   public void moveTo(float x, float y, float z)
   {
-    println("calling this");
+    println("calling this", x ,x ,z);
     moveTo(new PVector(x,y,z));
-    for (int i = 0 ; i < this.children.size(); i ++)
-    {
-        this.children.get(i).moveTo(new PVector(z,y,z));
-    }
-    
-     body.moveTo(20 * bodySize, -45 * bodySize, 0);
-     windshield.moveTo(x -30 * bodySize, y- 40 * bodySize, 0);
-     wheels[0].moveTo(x -75 * wheelSize, y + 35* wheelSize, 60* wheelSize);
-     wheels[1].moveTo(x-75* wheelSize, y + 35* wheelSize, -60* wheelSize);
-     wheels[2].moveTo(x +75* wheelSize, y +35* wheelSize, 60* wheelSize);
-     wheels[3].moveTo(x +75* wheelSize, y +35* wheelSize, -60* wheelSize);
+    parent.moveTo(x,y,z);
   }
   void draw()
   {
-    for (int i = 0 ; i < this.children.size(); i ++)
-    {
-      this.children.get(i).draw();
-    }
+    //for (int i = 0 ; i < this.children.size(); i ++)
+    //{
+    //  this.children.get(i).draw();
+    //}
+    drive();
+    parent.draw();
+    
     
   
   }
@@ -145,38 +165,6 @@ class Car extends Shape3D
   void calcShape(){
   }
   
-    public Shape3D pickShapes(PApplet papplet, int x, int y){
-    if(pickBuffer == null || pickBuffer.width != papplet.width || pickBuffer.height != papplet.height){
-      pickBuffer = (PGraphics3D) papplet.createGraphics(papplet.width, papplet.height, P3D);
-    }
-    pickBuffer.beginDraw();
-    // Set the camera same as the drawing surface
-    pickBuffer.camera.set(((PGraphicsOpenGL)papplet.g).camera);
-    pickBuffer.projection.set(((PGraphicsOpenGL)papplet.g).projection);
-    pickBuffer.modelview.set(((PGraphicsOpenGL)papplet.g).modelview);
-    pickBuffer.noSmooth();
-    pickBuffer.noLights();
-    pickBuffer.noStroke();
-    pickBuffer.background(WHITE);
-
-    // Draw to the buffer
-    pickModeOn = true;
-    drawAll();
-    pickBuffer.endDraw();
-
-    int c = pickBuffer.get(x,y);
-    pickModeOn = false;
-
-    // Next line inserted just to get a copy of the buffer for testing
-    // make sure it is commented out before release.
-    //img = pickBuffer.get(); 
     
-    //for(int i = 0 ; i  < pickMap.size(); i ++)
-    //{
-    //  println(pickMap.get(i));
-    //}
-    
-    return pickMap.get(c);
-  }
  
 }
