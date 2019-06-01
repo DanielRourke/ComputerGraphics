@@ -28,6 +28,22 @@ void setButtons()
                .setPosition(10,110)
                .setSize(100,20)
                ;
+               
+   cp5.addButton("Tube")
+               .setValue(3)
+               .setPosition(10,140)
+               .setSize(100,20)
+               ;
+  cp5.addButton("Cone")
+               .setValue(4)
+               .setPosition(10,170)
+               .setSize(100,20)
+               ;
+  cp5.addButton("BezTube Begin/End")
+               .setValue(-2)
+               .setPosition(10,170)
+               .setSize(100,20)
+               ;
    cp5.setAutoDraw(false);
 }
 
@@ -49,6 +65,41 @@ public void controlEvent(ControlEvent theEvent) {
      
     cam.setActive(isCameraActive);
     shapeType = eventValue;
+    
+    if(eventName.equals("BezTube Begin/End"))
+    {
+      P_Bezier3D bez;
+      BezTube btube;
+      println(points.size());
+
+      
+      if(points.size()> 2)
+      {
+            PVector[] pointArray = new PVector[points.size()];
+            int i = 0;
+            for (PVector pv : points)
+            {
+              println(pv);
+              pointArray[i] = pv;
+              i++;
+            }
+    
+            bez = new P_Bezier3D(pointArray, i);
+            btube = new BezTube(this, bez, 7, 7, 7);
+            center.addShape(btube);
+            drawingActive = false;
+            points.clear();
+      }
+      else
+      {
+              isCameraActive = true;
+              cam.setActive(isCameraActive);
+              drawingActive = true;
+              points.clear();
+      }
+
+        
+    }
   
  //if (eventName.equals("Camera ON/OFF"))
  // {

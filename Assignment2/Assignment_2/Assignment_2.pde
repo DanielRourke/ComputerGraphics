@@ -4,11 +4,12 @@ import shapes3d.*;
 
 import controlP5.*;
 ControlP5 cp5;
-Button myButton;
 
 import peasy.*;
 PeasyCam cam;
 boolean isCameraActive = false;
+
+
 
 
 public void settings()
@@ -23,7 +24,7 @@ ArrayList<Shape3D> shapes = new ArrayList<Shape3D>();
 
 void setup() {
   cam = new PeasyCam(this, 0, 0, 0, 300);
-  cam.setMinimumDistance(300);
+  cam.setMinimumDistance(50);
   cam.setMaximumDistance(3000);
   cam.setActive(isCameraActive);
   
