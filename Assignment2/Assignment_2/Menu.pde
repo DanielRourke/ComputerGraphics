@@ -71,6 +71,11 @@ void setButtons()
                .setPosition(70,320)
                .setSize(40,20)
                ;
+   cp5.addButton("Add Text")
+               .setValue(0)
+               .setPosition(10,350)
+               .setSize(100,20)
+               ;
    cp5.setAutoDraw(false);
 }
 
@@ -96,10 +101,14 @@ public void controlEvent(ControlEvent theEvent) {
           (eventName.equals("Cone"))     )
        {
             
-            if(eventValue < 0)
+            if(eventValue < 0){
                isCameraActive = !isCameraActive;
-            else
-               isCameraActive = false;
+            }
+            else{
+                isCameraActive = false;
+                drawingActive = true;
+            }
+               
     
             cam.setActive(isCameraActive);
             shapeType = eventValue;
@@ -160,6 +169,12 @@ public void controlEvent(ControlEvent theEvent) {
             {
               wireWeight -= 1;
             }
+        }
+        
+        
+        if (eventName.equals("Add Text"))
+        {
+             addTextActive = true;
         }
     
   }

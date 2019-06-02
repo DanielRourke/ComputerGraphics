@@ -12,8 +12,6 @@ File texture;
 
 ArrayList<PVector> points = new ArrayList<PVector>();
 
-
-
 void addShape()
 {
   if(drawingActive){
@@ -23,18 +21,14 @@ void addShape()
       float sizeX =(mouseX - mouseClickX) / 8;
       float sizeY =(mouseY - mouseClickY)/ 8;
       
-
+    
       
       
       switch((int)shapeType)
       {
        case 1:
            shapes3d.Box box = new shapes3d.Box(this,sizeX, sizeY, (sizeX + sizeY)/2);
-          // box.moveTo(mouseX,mouseY ,-100);
-          // box.rotateBy(cam.getRotations());
-            box.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
-          // println((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
-           //println(box.getPosVec());
+           box.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
            applyFill(box);
            shapes.add(box);
            drawingActive = false;
@@ -45,7 +39,8 @@ void addShape()
            sphere.setRadius((sizeX + sizeY)/2);
            sphere.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
            applyFill(sphere);
-           center.addShape(sphere);
+          //center.addShape(sphere);
+           shapes.add(sphere);
            drawingActive = false;
            shapeType = -1;
            break;
@@ -57,7 +52,8 @@ void addShape()
            toroid.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
            toroid.rotateBy(radians(90), 0, 0);
            applyFill(toroid);
-           center.addShape(toroid);
+           //center.addShape(toroid);
+           shapes.add(toroid);
            drawingActive = false;
            shapeType = -1;
            break;
@@ -67,7 +63,8 @@ void addShape()
            tube.setSize(sizeX/2,sizeY/2,sizeX/2,sizeY/2, (sizeX + sizeY)/2);
            tube.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
            applyFill(tube);
-           center.addShape(tube);
+           shapes.add(tube);
+           //center.addShape(tube);
            drawingActive = false;
            shapeType = -1;
            break;
@@ -76,7 +73,8 @@ void addShape()
            cone.setSize(sizeX/2,sizeX/2, sizeY);
            cone.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
            applyFill(cone);
-           center.addShape(cone);
+           shapes.add(cone);
+           //center.addShape(cone);
            drawingActive = false;
            shapeType = -1;
            break;
@@ -109,11 +107,13 @@ void createbezShapeTube()
             bez = new P_Bezier3D(pointArray, i);
             btube = new BezTube(this, bez, 7, 7, 7);
             applyFill((Shape3D)btube);
-            center.addShape(btube);
+            //center.addShape(btube);
+            shapes.add(btube);
 }
 
 color getColor()
 {
+    
     color colorPick =  color(255);
     int alpha;
     Color jColor = new Color(255);
@@ -137,7 +137,6 @@ void getTexture()
 }
 
 
-  
 
 public void applyFill(Shape3D shape){
   
@@ -170,7 +169,7 @@ public void applyFill(Shape3D shape){
       }
       
       
-      shape.pickColor(255);
+      shape.pickColor(color(255,255,255));
 }
 
 void  textureSelected(File selection) {
@@ -181,45 +180,4 @@ void  textureSelected(File selection) {
   }
   
 
-}
-
-
-
-void mousePressed(){
-  
-  //if shape begin drawing
-  if(shapeType >= 0){
-      drawingActive = true;
-      mouseClickX = mouseX;
-      mouseClickY = mouseY;
-  }
-  
-  println(mouseX, mouseY);
-
-  Shape3D picked = Shape3D.pickShape(this,mouseX, mouseY );
-
-  println(picked, (int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) );
-  println(mouseX, mouseY); 
-  if (picked != null)
-    println(picked.getPosVec());
-}
-
-
-void mouseReleased()
-{
-  
- thread("addShape");
-   
-}
-
-void keyPressed()
-{
-  
-  
-  println(key);
-  if (key == 'p')
-  {
-    isCameraActive = !isCameraActive;
-    cam.setActive(isCameraActive);
-  }
 }
