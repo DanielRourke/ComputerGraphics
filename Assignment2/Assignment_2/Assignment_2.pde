@@ -1,29 +1,21 @@
 import java.util.*; 
 import shapes3d.utils.*;
 import shapes3d.*;
-
 import controlP5.*;
-ControlP5 cp5;
-
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import peasy.*;
+
+
 PeasyCam cam;
-
-
-boolean isCameraActive = false;
-
-
-  
- 
- import javax.swing.*;
- import java.awt.*;
- import java.awt.event.*;
-
-
-shapes3d.Box center;
-shapes3d.Box offcenter;
+ControlP5 cp5;
 ArrayList<Shape3D> shapes;
 ArrayList<String> text;
-PFont font;
+
+shapes3d.Box center;
+
+
  
 public void settings()
 {
@@ -31,43 +23,34 @@ public void settings()
     size(800,800, P3D);
 }
 
-
-
-
 void setup() {
+  //camera setup
   cam = new PeasyCam(this, 0, 0, 0, 300);
   cam.setMinimumDistance(50);
   cam.setMaximumDistance(3000);
   cam.setActive(isCameraActive);
   
-  center = new shapes3d.Box(this ,10,10,10);
-  //offcenter = new shapes3d.Box(this ,10,10,10);
-  //offcenter.moveBy(0,0,-100);
-  //center.moveTo(width/2,height/2, 0);
-  
-  //Add Menu Buttons
-   
+   //Add Menu Buttons
    setButtons();
    running = true;
+  
+  center = new shapes3d.Box(this ,10,10,10);
+
+   
    
    //shape settings 
    drawingActive = false;
-   fillColor = false;
-   fillTexture = false;
-   fillWire = false;
+   isPickingActive = false;
    shapeType = -1;
    wireWeight = 1;
-   texture = new File("default.txt");
+   
    shapes = new ArrayList<Shape3D>();
 
-    text = new ArrayList<String>();
-   font = createFont(  "Chunkfive.otf", 5);
-   textFont(font);
-   textAlign(CENTER, CENTER);
-   textMode(SHAPE);
-  //TextShape t = new TextShape("work" , 0 , 0, -100);
-  //t.move(0,0,400);
-  //shapes.add(t);
+
+  textSetup();
+  
+  
+      Shape3D.pickShape(this,mouseX, mouseY);
 }
 
 
@@ -81,10 +64,7 @@ void draw(){
          shape.draw();     
   }
   
-  for (Shape3D shape : shapes)
-  {
-         shape.draw();     
-  }
+
   gui();
 }
 
@@ -93,35 +73,86 @@ Shape3D picked;
 color previousColor;
 
 void mousePressed(){
+  //save mouse coords
       mouseClickX = mouseX;
       mouseClickY = mouseY;
       
+      if(shapeType > 0)
+      {
+        drawingActive = true;
+      }
+      else if( shapeType == -2)
+      {
+         drawingActive = true;
+      }
       
-  //if shape begin drawing
-  if(shapeType >= 0){
-    
-  }
- 
+      
+      
+      
+      if(isPickingActive)
+      {
+         isPickingActive = false;
+         //release last picked item
+         //if(picked != null)
+         //    //picked.fill(previousColor);
+          
+          picked = Shape3D.pickShape(this,mouseX, mouseY);
+          
+          if (picked != null){
+            
+                for (Shape3D shape : shapes)
+                {
+                       if (shape == picked)
+                       {
+                                    
+                         //added cause Box fill returns error
+                         
+                          previousColor = shape.fill();
+                          //println(previousColor);
+                          shape.fill(color(255,255,0));
+                       }
+                }
 
-  picked = Shape3D.pickShape(this,mouseX, mouseY );
-  if (picked != null){
-    previousColor = picked.fill();
-    println(picked);
-    picked.fill(color(255,255,0));
+             // picked.fill(color(255,255,0));
+      }
+
+
+      //addFill();
   }
     
 }
 
 
+void mouseDragged()
+{
+
+          //if (picked != null)
+          //{
+          //  picked.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
+          //}
+          
+
+}
+
+
 void mouseReleased()
 {
-  if(picked != null){
-      picked.fill(previousColor);
-      picked = null;
-  }
 
      thread("addShape");
      
+     //if(key == 'm')
+     //{
+     //     if (picked != null)
+     //     {
+     //       picked.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
+     //       picked = null;
+     //     }
+     //}
+     
+          //if (picked != null)
+          //{
+          //    picked = null;
+          //}
 }
 
 String tempString = ""; 
@@ -129,39 +160,18 @@ String tempString = "";
 void keyPressed()
 {  
   
-  if(key == '\n')
-  {
-          TextShape t = new TextShape(tempString , 
-                                (int)(cam.getPosition()[0] * 0.70) ,
-                                (int)(cam.getPosition()[1] * 0.70) ,
-                                (int)(cam.getPosition()[2] * 0.70) ,
-                                cam.getRotations()[0] ,
-                                cam.getRotations()[1] ,
-                                cam.getRotations()[2]  );
-          shapes.add(t);
-          println(" adding " , tempString);
-          addTextActive = false;
-          tempString = "";
-          println(cam.getRotations());
-  }
-  else if(addTextActive)
-  {
-    if(key != CODED)
+    textBuilder();
+    
+    fillAdder();
+    
+    if(key == 'm')
     {
-      tempString += key;
-      println(key);
+          if (picked != null)
+          {
+            picked.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
+            picked.fill(previousColor);
+            picked = null;
+          }
     }
-  }
 
-      
-
-  
-  
-  
-  //println(key);
-  //if (key == 'p')
-  //{
-  //  isCameraActive = !isCameraActive;
-  //  cam.setActive(isCameraActive);
-  //}
 }

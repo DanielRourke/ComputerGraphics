@@ -1,5 +1,20 @@
 
-boolean addTextActive;
+
+
+PFont font;
+
+
+
+void textSetup()
+{
+   text = new ArrayList<String>();
+   font = createFont(  "Chunkfive.otf", 5);
+   textFont(font);
+   textAlign(CENTER, CENTER);
+   textMode(SHAPE);
+}
+
+
 class TextShape extends Shape3D
 {
   String text;
@@ -43,5 +58,33 @@ class TextShape extends Shape3D
        posX = x;
        posY = y;
        posZ = z;
+  }
+}
+
+
+void textBuilder()
+{
+  if(key == '\n')
+  {
+          TextShape t = new TextShape(tempString , 
+                                (int)(cam.getPosition()[0] * 0.70) ,
+                                (int)(cam.getPosition()[1] * 0.70) ,
+                                (int)(cam.getPosition()[2] * 0.70) ,
+                                cam.getRotations()[0] ,
+                                cam.getRotations()[1] ,
+                                cam.getRotations()[2]  );
+          shapes.add(t);
+            println(" adding " , tempString);
+          addTextActive = false;
+          tempString = "";
+          println(cam.getRotations());
+  }
+  else if(addTextActive)
+  {
+    if(key != CODED)
+    {
+      tempString += key;
+      println(key);
+    }
   }
 }
