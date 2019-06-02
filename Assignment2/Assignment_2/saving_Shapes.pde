@@ -1,9 +1,10 @@
 
 Table table;
-void saveShapes()
+
+
+void setupTable()
 {
-       table = new Table();
- 
+         table = new Table();
          table.addColumn("Type");
          table.addColumn("Width");
          table.addColumn("Height");
@@ -32,14 +33,13 @@ void saveShapes()
          table.addColumn("v5");
          table.addColumn("v6");
          table.addColumn("VSize");
-        
-   }       
+         table.addColumn("str");
+         table.addColumn("draw");
+}
    
    
-   
-   
- void addBox(String s, float w, float b , float h, float x, float y , float z)
- {
+void addBox(String s, float w, float b , float h, float x, float y , float z)
+{
    
    TableRow newRow = table.addRow();
    
@@ -50,11 +50,10 @@ void saveShapes()
        newRow.setFloat("posX", x);
        newRow.setFloat("posY", y);
        newRow.setFloat("posZ", z);
-   
- }
+}
          
- void addSphere(String s, float x, float y , float z, float r)
- {
+void addSphere(String s, float x, float y , float z, float r)
+{
     TableRow newRow = table.addRow();
        newRow.setString("Type", s);
        newRow.setFloat("Radius", r );
@@ -62,7 +61,7 @@ void saveShapes()
        newRow.setFloat("posY", y);
        newRow.setFloat("posZ", z);
    
- }
+}
  
  void addToroid(String s, float w, float b , float h,float x, float y , float z, float rx, float ry , float rz)
  {
@@ -111,7 +110,7 @@ void saveShapes()
        newRow.setFloat("Width",w );
        newRow.setFloat("Height",h );
        newRow.setFloat("Breadth",b );
-       row.setInt("VSize", size);
+       newRow.setInt("VSize", size);
        newRow.setFloat("posX", pointArray[0].x);
        newRow.setFloat("posY", pointArray[0].y);
        newRow.setFloat("posZ", pointArray[0].z);
@@ -135,54 +134,27 @@ void saveShapes()
 
  }
 
-          
- 
-//void createBox()
-//{
-//  shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width");,row.getFloat("Height"), row.getFloat("Breadth"));
-//}
-
-//void createSphere()
-//{
-//}
-
-//void create Toroid()
-//{
-  
-//}
-
-//void createTube()
-//{
-  
-//}
-
-//void createCone();
-//{
-  
-//}
-
-//void createBezTube();
-//{
-  
-//}
-
-  
-
+         
 void loadShapes()
 {
-  table = loadTable("shapes.csv" , "header");
+  table = loadTable("/data/shapes.csv" , "header");
   {
     for (TableRow row :  table.rows()) 
     {
-            
            String type = row.getString("Type");
            
            if(type.equals("Box"))
            {
-                 shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width");,row.getFloat("Height"), row.getFloat("Breadth"));
+            
+                 shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width"), row.getFloat("Breadth"),row.getFloat("Height"));
                  box.moveTo(row.getFloat("posX") ,
                             row.getFloat("posY") ,
                             row.getFloat("posZ"));
+                 if(row.getInt("draw") == 1)
+                 {
+                   box.fill(color(row.getInt("colR"),row.getInt("colG"),row.getInt("colB"),row.getInt("colA")));
+                 }
+                 
                  shapes.add(box);           
            }
            else if(type.equals("Ellipsoid"))
@@ -192,41 +164,57 @@ void loadShapes()
                  sphere.moveTo( row.getFloat("posX") ,
                                 row.getFloat("posY") ,
                                 row.getFloat("posZ"));
+                 if(row.getInt("draw") == 1)
+                 {
+                     sphere.fill(color(row.getInt("colR"),row.getInt("colG"),row.getInt("colB"),row.getInt("colA")));
+                 }
                  shapes.add(sphere);
            }
            else if(type.equals("Toroid"))
              {
                  Toroid toroid= new Toroid(this, 20 ,30);
-                 toroid.setRadius( row.getFloat("Width"),row.getFloat("Height"),row.getFloat("Breadth");
+                 toroid.setRadius( row.getFloat("Width"),row.getFloat("Breadth"),row.getFloat("Height"));
                  toroid.moveTo( row.getFloat("posX") ,
                                 row.getFloat("posY") ,
                                 row.getFloat("posZ"));
                  toroid.rotateTo( row.getFloat("rotX"),
                                   row.getFloat("rotY"),
                                   row.getFloat("rotZ") );
+                 if(row.getInt("draw") == 1)
+                 {
+                     toroid.fill(color(row.getInt("colR"),row.getInt("colG"),row.getInt("colB"),row.getInt("colA")));
+                 }
                  shapes.add(toroid);
            }
            else if(type.equals("Tube"))
            {
                      Tube tube= new Tube(this, 20 ,30);
                      tube.setSize(row.getFloat("Width"),
-                                  row.getFloat("Height"),
+                                  row.getFloat("Breadth"),
                                   row.getFloat("Width"), 
-                                  row.getFloat("Height"),
-                                  row.getFloat("Breadth"));
+                                  row.getFloat("Breadth"),
+                                  row.getFloat("Height"));
                      tube.moveTo( row.getFloat("posX") ,
                                   row.getFloat("posY") ,
                                   row.getFloat("posZ"));
+                     if(row.getInt("draw") == 1)
+                     {
+                         tube.fill(color(row.getInt("colR"),row.getInt("colG"),row.getInt("colB"),row.getInt("colA")));
+                     }
                      shapes.add(tube);
            }
            
            else if(type.equals("Cone"))
            {
                    Cone cone = new Cone(this, 20);
-                   cone.setSize(row.getFloat("Width"),row.getFloat("Height"),  row.getFloat("Breadth"));
+                   cone.setSize(row.getFloat("Width"),  row.getFloat("Breadth"),row.getFloat("Height"));
                    cone.moveTo( row.getFloat("posX") ,
                                   row.getFloat("posY") ,
                                   row.getFloat("posZ"));
+                  if(row.getInt("draw") == 1)
+                   {
+                       cone.fill(color(row.getInt("colR"),row.getInt("colG"),row.getInt("colB"),row.getInt("colA")));
+                   }
                    shapes.add(cone); 
            }
            else if(type.equals("BezTube"))
@@ -239,7 +227,7 @@ void loadShapes()
                                             row.getFloat("posZ"));
                 pointArray[1] = new PVector( row.getFloat("rotX"),
                                              row.getFloat("rotY"),
-                                             row.getFloat("rotZ") )
+                                             row.getFloat("rotZ") );
                 if(s >2){
                   pointArray[2] = new PVector( row.getFloat("v1"),
                                                row.getFloat("v2"),
@@ -254,17 +242,35 @@ void loadShapes()
                 P_Bezier3D bez;
                 BezTube btube;
                 bez = new P_Bezier3D(pointArray, s);
-                btube = new BezTube(this, bez, row.getFloat("Width"), row.getFloat("Height"), row.getFloat("Breadth"));
+                btube = new BezTube(this, bez, (int)row.getFloat("Width"),(int)row.getFloat("Breadth"), (int)row.getFloat("Height") );
+                
+                 if(row.getInt("draw") == 1)
+                 {
+                   btube.fill(color(row.getInt("colR"),row.getInt("colG"),row.getInt("colB"),row.getInt("colA")));
+                 }
                 shapes.add(btube);
            }
-           else if(type.equals("Text"))
+           else if(type.equals("Texter"))
            {
-             //TODO:
+             //TODO: fix Words
+             //println("got here");
+             //TextShape t = new TextShape(row.getString("str"), 
+             //                       row.getFloat("posX") ,
+             //                       row.getFloat("posY") ,
+             //                       row.getFloat("posZ") ,
+             //                       row.getFloat("rotX"),
+             //                       row.getFloat("rotY"),
+             //                       row.getFloat("rotZ") );
+             //                       println("but not here here");
+             // shapes.add(t);
+             // break;
            }
            
-           
-           
-           
+  }
+  
+}
+
+}         
            
            //        row.getFloat("Width");
            //        row.getFloat("Height");
@@ -283,12 +289,6 @@ void loadShapes()
            //        row.getFloat("v6");
            //        row.getFloat("Radius");
            //        row.getInt("VSize");
-
-  }
-  
-}
-
-
 //class ShapeItems
 //{
 //  String type;

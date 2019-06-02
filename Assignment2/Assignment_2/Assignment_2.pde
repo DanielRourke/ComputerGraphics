@@ -48,7 +48,7 @@ void setup() {
 
 
   textSetup();
-  
+  setupTable();
   
       Shape3D.pickShape(this,mouseX, mouseY);
 }

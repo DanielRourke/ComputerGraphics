@@ -118,6 +118,31 @@ public void controlEvent(ControlEvent theEvent) {
              cam.setActive(isCameraActive);
              isPickingActive = true;
         }
+        
+        if (eventName.equals("Save"))
+        {
+          
+             for (int i  = 0; i < shapes.size(); i++)
+             {
+               color c = shapes.get(i).fill();
+              // shapes.get(i).getRotVec();
+               TableRow row = table.getRow(i);
+               println(color(c));
+               row.setInt("colR", (int)red(c));
+               row.setInt("colG", (int)green(c));
+               row.setInt("colB", (int)blue(c));
+               //row.setInt("colA", (int)alpha(c));
+             }
+ 
+          
+          
+             saveTable(table, "/data/shapes.csv");
+        }
+        
+        if (eventName.equals("Load"))
+        {
+             loadShapes();
+        }
     
   }
        

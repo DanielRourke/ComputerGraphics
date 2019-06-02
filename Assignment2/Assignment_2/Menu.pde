@@ -84,7 +84,17 @@ void setButtons()
                ;
    cp5.addButton("Pick Shape")
                .setValue(0)
-               .setPosition(10,350)
+               .setPosition(10,380)
+               .setSize(100,20)
+               ;
+   cp5.addButton("Save")
+               .setValue(0)
+               .setPosition(10,410)
+               .setSize(100,20)
+               ;
+    cp5.addButton("Load")
+               .setValue(0)
+               .setPosition(10,440)
                .setSize(100,20)
                ;
    cp5.setAutoDraw(false);

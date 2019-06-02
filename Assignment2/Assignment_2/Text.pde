@@ -34,6 +34,17 @@ class TextShape extends Shape3D
        rotX = rx;
        rotY = ry;
        rotZ = rz;
+       
+       
+       //TableRow newRow = table.addRow();
+       //newRow.setString("Type", "Texter");
+       //newRow.setString("str", s);
+       //newRow.setFloat("posX", x);
+       //newRow.setFloat("posY", y);
+       //newRow.setFloat("posZ", z);
+       //newRow.setFloat("rotX", rx);
+       //newRow.setFloat("rotY", ry);
+       //newRow.setFloat("rotZ", rz);
   }
   
   
@@ -42,7 +53,7 @@ class TextShape extends Shape3D
     pushMatrix();
 
     translate(posX, posY, posZ);
-        rotateX(rotX);
+    rotateX(rotX);
     rotateY(rotY);
     rotateZ(rotZ);
     text(text,0,0,0) ;
