@@ -3,23 +3,18 @@ float mouseClickX;
 float mouseClickY;
 float shapeType = -1;
 boolean drawingActive = false;
-Vector<PVector> points = new Vector<PVector>();
+boolean fillColor = false;
+boolean fillTexture = false;
+boolean fillWire = false;
+float wireWeight = 1;
 
-void mousePressed(){
-  
-  //if shape begin drawing
-  if(shapeType >= 0){
-      drawingActive = true;
-      mouseClickX = mouseX;
-      mouseClickY = mouseY;
-  }
-  
-  println(mouseX, mouseY);
+File texture;
 
-}
+ArrayList<PVector> points = new ArrayList<PVector>();
 
 
-void mouseReleased()
+
+void addShape()
 {
   if(drawingActive){
     
@@ -28,48 +23,59 @@ void mouseReleased()
       float sizeX =(mouseX - mouseClickX) / 8;
       float sizeY =(mouseY - mouseClickY)/ 8;
       
+
+      
+      
       switch((int)shapeType)
       {
-       case 0:
-           Box box = new Box(this,sizeX, sizeY, (sizeX + sizeY)/2);
-           box.moveTo(cam.getPosition()[0] * 0.70 ,cam.getPosition()[1]* 0.70 ,cam.getPosition()[2] * 0.70 );
-           center.addShape(box);
-           drawingActive = false;
-           shapeType = -1;
-           break;
        case 1:
-           Ellipsoid sphere= new Ellipsoid(this, 20 ,30);
-           sphere.setRadius((sizeX + sizeY)/2);
-           println(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60);
-           sphere.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
-           center.addShape(sphere);
+           shapes3d.Box box = new shapes3d.Box(this,sizeX, sizeY, (sizeX + sizeY)/2);
+          // box.moveTo(mouseX,mouseY ,-100);
+          // box.rotateBy(cam.getRotations());
+            box.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
+          // println((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
+           //println(box.getPosVec());
+           applyFill(box);
+           shapes.add(box);
            drawingActive = false;
            shapeType = -1;
            break;
        case 2:
+           Ellipsoid sphere= new Ellipsoid(this, 20 ,30);
+           sphere.setRadius((sizeX + sizeY)/2);
+           sphere.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
+           applyFill(sphere);
+           center.addShape(sphere);
+           drawingActive = false;
+           shapeType = -1;
+           break;
+       case 3:
            Toroid toroid= new Toroid(this, 20 ,30);
            toroid.setRadius(( sizeX+ sizeY)/12,( sizeX+ sizeY)/16,( sizeX+ sizeY)/6);
            
            println(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60);
            toroid.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
            toroid.rotateBy(radians(90), 0, 0);
+           applyFill(toroid);
            center.addShape(toroid);
            drawingActive = false;
            shapeType = -1;
            break;
            
-        case 3:
+        case 4:
            Tube tube= new Tube(this, 20 ,30);
            tube.setSize(sizeX/2,sizeY/2,sizeX/2,sizeY/2, (sizeX + sizeY)/2);
            tube.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
+           applyFill(tube);
            center.addShape(tube);
            drawingActive = false;
            shapeType = -1;
            break;
-        case 4:
+        case 5:
            Cone cone = new Cone(this, 20);
            cone.setSize(sizeX/2,sizeX/2, sizeY);
            cone.moveTo(cam.getPosition()[0] * 0.60 ,cam.getPosition()[1]* 0.60 ,cam.getPosition()[2] * 0.60 );
+           applyFill(cone);
            center.addShape(cone);
            drawingActive = false;
            shapeType = -1;
@@ -83,6 +89,126 @@ void mouseReleased()
       }
   }
   
+}
+
+//creates a bezShape Tube from predifined Points
+void createbezShapeTube()
+{
+            P_Bezier3D bez;
+            BezTube btube;
+            println(points.size());
+            PVector[] pointArray = new PVector[points.size()];
+            int i = 0;
+            for (PVector pv : points)
+            {
+              println(pv);
+              pointArray[i] = pv;
+              i++;
+            }
+
+            bez = new P_Bezier3D(pointArray, i);
+            btube = new BezTube(this, bez, 7, 7, 7);
+            applyFill((Shape3D)btube);
+            center.addShape(btube);
+}
+
+color getColor()
+{
+    color colorPick =  color(255);
+    int alpha;
+    Color jColor = new Color(255);
+    jColor  = JColorChooser.showDialog(null,"Java Color Chooser", jColor);
+    if(jColor!=null) 
+    {
+      println(jColor);
+      colorPick = jColor.getRGB();
+      alpha = jColor.getAlpha();
+      println(alpha);
+      
+    }
+    
+    return colorPick;
+
+}
+
+void getTexture()
+{
+  
+}
+
+
+  
+
+public void applyFill(Shape3D shape){
+  
+      if(fillColor && fillWire)
+      {
+          shape.drawMode(Shape3D.SOLID | Shape3D.WIRE);
+          shape.fill(getColor());
+          shape.stroke(getColor());
+          shape.strokeWeight(wireWeight);
+      }
+      else if(fillColor)
+      {
+        shape.drawMode(Shape3D.SOLID);
+        shape.fill(getColor());
+      }
+      else if(fillWire)
+      {
+         shape.drawMode(Shape3D.WIRE);
+         shape.stroke(getColor());
+         shape.strokeWeight(wireWeight);
+      }
+      else if(fillTexture)
+      {
+         //if(texture != null)
+         //{
+         //   shape.drawMode(Shape3D.TEXTURE);
+         //   shape.setTexture(texture.getAbsolutePath());
+         //}
+          
+      }
+      
+      
+      shape.pickColor(255);
+}
+
+void  textureSelected(File selection) {
+  if (selection == null) {
+      println("Window was closed or the user hit cancel.");
+  } else {
+     texture = selection;
+  }
+  
+
+}
+
+
+
+void mousePressed(){
+  
+  //if shape begin drawing
+  if(shapeType >= 0){
+      drawingActive = true;
+      mouseClickX = mouseX;
+      mouseClickY = mouseY;
+  }
+  
+  println(mouseX, mouseY);
+
+  Shape3D picked = Shape3D.pickShape(this,mouseX, mouseY );
+
+  println(picked, (int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) );
+  println(mouseX, mouseY); 
+  if (picked != null)
+    println(picked.getPosVec());
+}
+
+
+void mouseReleased()
+{
+  
+ thread("addShape");
    
 }
 
