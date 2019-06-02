@@ -142,5 +142,5 @@ void createbezShapeTube()
             println(picked);
             shapeType = 0;
             
-            addBezTube("BezTube" , 7,7,7 , pointArray );
+            addBezTube("BezTube" , 7,7,7 , pointArray, i );
 }

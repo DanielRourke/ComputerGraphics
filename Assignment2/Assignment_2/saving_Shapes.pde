@@ -2,24 +2,6 @@
 Table table;
 void saveShapes()
 {
-  
-  //           shapes3d.Box box = new shapes3d.Box(this,sizeX, sizeY, (sizeX + sizeY)/2);
-  //         box.moveTo((int)(cam.getPosition()[0] * 0.70) ,(int)(cam.getPosition()[1]* 0.70) ,(int)(cam.getPosition()[2] * 0.70 ));
-  //         shapes.add(box);
-  //         picked = shapes.get(shapes.size() - 1);
-  
-  
-  
- // w b h
- //position 
- //rotation
- //type
- //color
- // texture
- //stroke weirght
- //stoke color
- 
- 
        table = new Table();
  
          table.addColumn("Type");
@@ -49,35 +31,8 @@ void saveShapes()
          table.addColumn("v4");
          table.addColumn("v5");
          table.addColumn("v6");
-         
-          //for (Shape3D shape : shapes)
-          //{
-          //   TableRow newRow = table.addRow();
-            
-          //  newRow.setString("Type", shape.tag);
-          //  newRow.SetFloat("Width", );
-          //  newRow.SetFloat("Height", );
-          //  newRow.SetFloat("Breadth", );
-          //  newRow.SetFloat("Radius", );
-          //  newRow.SetFloat("posX", );
-          //  newRow.SetFloat("posY", );
-          //  newRow.SetFloat("posZ", );
-          //  newRow.SetFloat("rotX", );
-          //  newRow.SetFloat("rotY", );
-          //  newRow.SetFloat("rotZ", );
-          //   newRow.setInt("colR", );
-          //   newRow.setInt("ColG", );
-          //   newRow.setInt("colB", );
-          //   newRow.setInt("colA", );
-          //   newRow.setInt("stoR", );
-          //   newRow.setInt("stoG", );
-          //   newRow.setInt("stoB", );
-          //   newRow.setInt("stoA", );
-          //  newRow.SetFloat("strokeWeight", );
-          //  newRow.SetString("texture", );
-          //  newRow.SetFloat("", );
-            
-          //}
+         table.addColumn("VSize");
+        
    }       
    
    
@@ -149,27 +104,29 @@ void saveShapes()
        newRow.setFloat("posZ", z);
  }
  
- void addBezTube(String s, float w, float b , float h, PVector[] pointArray )
+ void addBezTube(String s, float w, float b , float h, PVector[] pointArray , int size)
  {
       TableRow newRow = table.addRow();
        newRow.setString("Type", s);
        newRow.setFloat("Width",w );
        newRow.setFloat("Height",h );
        newRow.setFloat("Breadth",b );
+       row.setInt("VSize", size);
        newRow.setFloat("posX", pointArray[0].x);
        newRow.setFloat("posY", pointArray[0].y);
        newRow.setFloat("posZ", pointArray[0].z);
        newRow.setFloat("rotX", pointArray[1].x);
        newRow.setFloat("rotY", pointArray[1].y);
        newRow.setFloat("rotZ", pointArray[1].z);
-       if(pointArray.length > 2)
+       
+       if(size > 2)
        {
            newRow.setFloat("v1", pointArray[2].x);
            newRow.setFloat("v2", pointArray[2].y);
            newRow.setFloat("v3", pointArray[2].z);
        }
 
-       if(pointArray.length > 3)
+       if(size > 3)
        {
            newRow.setFloat("v4", pointArray[3].x);
            newRow.setFloat("v5", pointArray[3].y);
@@ -180,113 +137,168 @@ void saveShapes()
 
           
  
-void createBox()
-{
-  shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width");,row.getFloat("Height"), row.getFloat("Breadth"));
-}
+//void createBox()
+//{
+//  shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width");,row.getFloat("Height"), row.getFloat("Breadth"));
+//}
 
-void createSphere()
-{
-}
+//void createSphere()
+//{
+//}
 
-void create Toroid()
-{
+//void create Toroid()
+//{
   
-}
+//}
 
-void createTube()
-{
+//void createTube()
+//{
   
-}
+//}
 
-void createCone();
-{
+//void createCone();
+//{
   
-}
+//}
 
-void createBezTube();
-{
+//void createBezTube();
+//{
   
-}
+//}
 
   
-
 
 void loadShapes()
 {
   table = loadTable("shapes.csv" , "header");
- 
   {
     for (TableRow row :  table.rows()) 
     {
             
-           String type =  row.getString("Type");
+           String type = row.getString("Type");
            
            if(type.equals("Box"))
            {
-               shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width");,row.getFloat("Height"), row.getFloat("Breadth"));
-               box.moveTo(row.getFloat("posX") ,
-                          row.getFloat("posY") ,
-                          row.getFloat("posZ"));
-               shapes.add(box);           
+                 shapes3d.Box box = new shapes3d.Box(this,row.getFloat("Width");,row.getFloat("Height"), row.getFloat("Breadth"));
+                 box.moveTo(row.getFloat("posX") ,
+                            row.getFloat("posY") ,
+                            row.getFloat("posZ"));
+                 shapes.add(box);           
            }
            else if(type.equals("Ellipsoid"))
            {
-               Ellipsoid sphere= new Ellipsoid(this, 20 ,30);
-               sphere.setRadius(row.getFloat("Radius"));
-               sphere.moveTo( row.getFloat("posX") ,
-                              row.getFloat("posY") ,
-                              row.getFloat("posZ"));
-             shapes.add(sphere);
+                 Ellipsoid sphere= new Ellipsoid(this, 20 ,30);
+                 sphere.setRadius(row.getFloat("Radius"));
+                 sphere.moveTo( row.getFloat("posX") ,
+                                row.getFloat("posY") ,
+                                row.getFloat("posZ"));
+                 shapes.add(sphere);
            }
            else if(type.equals("Toroid"))
+             {
+                 Toroid toroid= new Toroid(this, 20 ,30);
+                 toroid.setRadius( row.getFloat("Width"),row.getFloat("Height"),row.getFloat("Breadth");
+                 toroid.moveTo( row.getFloat("posX") ,
+                                row.getFloat("posY") ,
+                                row.getFloat("posZ"));
+                 toroid.rotateTo( row.getFloat("rotX"),
+                                  row.getFloat("rotY"),
+                                  row.getFloat("rotZ") );
+                 shapes.add(toroid);
+           }
+           else if(type.equals("Tube"))
            {
-             Toroid toroid= new Toroid(this, 20 ,30);
-           toroid.setRadius( row.getFloat("Width"),row.getFloat("Height"),row.getFloat("Breadth");
-           toroid.moveTo( row.getFloat("posX") ,
-                          row.getFloat("posY") ,
-                          row.getFloat("posZ"));
-           toroid.rotateTo( row.getFloat("rotX"),
-                            row.getFloat("rotY"),
-                            row.getFloat("rotZ") );
-           shapes.add(toroid);
+                     Tube tube= new Tube(this, 20 ,30);
+                     tube.setSize(row.getFloat("Width"),
+                                  row.getFloat("Height"),
+                                  row.getFloat("Width"), 
+                                  row.getFloat("Height"),
+                                  row.getFloat("Breadth"));
+                     tube.moveTo( row.getFloat("posX") ,
+                                  row.getFloat("posY") ,
+                                  row.getFloat("posZ"));
+                     shapes.add(tube);
+           }
+           
+           else if(type.equals("Cone"))
+           {
+                   Cone cone = new Cone(this, 20);
+                   cone.setSize(row.getFloat("Width"),row.getFloat("Height"),  row.getFloat("Breadth"));
+                   cone.moveTo( row.getFloat("posX") ,
+                                  row.getFloat("posY") ,
+                                  row.getFloat("posZ"));
+                   shapes.add(cone); 
+           }
+           else if(type.equals("BezTube"))
+           {
+               int s = row.getInt("VSize");
+                PVector[] pointArray = new PVector[s];
+               
+                pointArray[0] = new PVector(row.getFloat("posX") ,
+                                            row.getFloat("posY") ,
+                                            row.getFloat("posZ"));
+                pointArray[1] = new PVector( row.getFloat("rotX"),
+                                             row.getFloat("rotY"),
+                                             row.getFloat("rotZ") )
+                if(s >2){
+                  pointArray[2] = new PVector( row.getFloat("v1"),
+                                               row.getFloat("v2"),
+                                               row.getFloat("v3"));
+                }
+                if(s>3){
+                  pointArray[3] = new PVector( row.getFloat("v4"),
+                                               row.getFloat("v5"),
+                                               row.getFloat("v6"));
+                }
+                  
+                P_Bezier3D bez;
+                BezTube btube;
+                bez = new P_Bezier3D(pointArray, s);
+                btube = new BezTube(this, bez, row.getFloat("Width"), row.getFloat("Height"), row.getFloat("Breadth"));
+                shapes.add(btube);
+           }
+           else if(type.equals("Text"))
+           {
+             //TODO:
            }
            
            
            
            
-                   row.getFloat("Width");
-                   row.getFloat("Height");
-                   row.getFloat("Breadth");
-                   row.getFloat("posX");
-                   row.getFloat("posY");
-                   row.getFloat("posZ");
-                   row.getFloat("rotX");
-                   row.getFloat("rotY");
-                   row.getFloat("rotZ");
-                   row.getFloat("v1");
-                   row.getFloat("v2");
-                   row.getFloat("v3");
-                   row.getFloat("v4");
-                   row.getFloat("v5");
-                   row.getFloat("v6");
-                   row.getFloat("Radius");
+           
+           //        row.getFloat("Width");
+           //        row.getFloat("Height");
+           //        row.getFloat("Breadth");
+           //        row.getFloat("posX");
+           //        row.getFloat("posY");
+           //        row.getFloat("posZ");
+           //        row.getFloat("rotX");
+           //        row.getFloat("rotY");
+           //        row.getFloat("rotZ");
+           //        row.getFloat("v1");
+           //        row.getFloat("v2");
+           //        row.getFloat("v3");
+           //        row.getFloat("v4");
+           //        row.getFloat("v5");
+           //        row.getFloat("v6");
+           //        row.getFloat("Radius");
+           //        row.getInt("VSize");
 
   }
   
 }
 
 
-class ShapeItems
-{
-  String type;
-  float posX;
-  float posY;
-  float posZ;
-  float rotX;
-  float rotY;
-  float rotZ;
-  String colour;
-  String strokeColour
-  String 
-}
+//class ShapeItems
+//{
+//  String type;
+//  float posX;
+//  float posY;
+//  float posZ;
+//  float rotX;
+//  float rotY;
+//  float rotZ;
+//  String colour;
+//  String strokeColour
+//  String 
+//}
