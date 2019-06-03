@@ -7,7 +7,7 @@ boolean isCameraActive = false;
 boolean drawingActive = false;
 boolean addTextActive;
 boolean running;
-Boolean scalingActive = false;
+
 
 
 
@@ -128,26 +128,6 @@ public void controlEvent(ControlEvent theEvent) {
         {
              loadShapes2();
         }
-        
-        if (eventName.equals("Delete"))
-        {
-             
-              for (int i  = 0; i < shapes.size(); i++)
-               {
-                 if(shapes.get(i) == picked)
-                 {
-                     shapes.remove(i);
-                 }    
-              }
-        }
-        
-        if (eventName.equals("Scale"))
-        {
-             shapeType = -4;
-             isCameraActive = false;
-             cam.setActive(false);
-        }
-               
     
   }
        

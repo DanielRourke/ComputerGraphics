@@ -97,16 +97,6 @@ void setButtons()
                .setPosition(10,440)
                .setSize(100,20)
                ;
-    cp5.addButton("Delete")
-               .setValue(0)
-               .setPosition(10,470)
-               .setSize(100,20)
-               ;
-    cp5.addButton("Scale")
-               .setValue(0)
-               .setPosition(10,470)
-               .setSize(100,20)
-               ;
    cp5.setAutoDraw(false);
 }
 

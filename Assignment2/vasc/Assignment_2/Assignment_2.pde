@@ -41,7 +41,6 @@ void setup() {
    //shape settings 
    drawingActive = false;
    isPickingActive = false;
-   scalingActive = false;
    shapeType = -1;
    wireWeight = 1;
    
@@ -85,11 +84,6 @@ void mousePressed(){
       else if( shapeType == -2)
       {
          drawingActive = true;
-      }
-      else if( shapeType == -4)
-      {
-        scalingActive = true;
-        
       }
       
       
@@ -145,17 +139,7 @@ void mouseReleased()
 {
 
      thread("addShape");
-     if(scalingActive && picked != null)
-     {
-             float sizeX =(mouseX - mouseClickX) / 100;
-              float sizeY =(mouseY - mouseClickY)/ 100;
-              println((sizeX + sizeY )/2);
-              picked.scale((sizeX + sizeY )/2);
-              picked.fill(previousColor);
-              picked = null;
-               scalingActive = false;
-               shapeType = 0;
-     }
+     
      //if(key == 'm')
      //{
      //     if (picked != null)

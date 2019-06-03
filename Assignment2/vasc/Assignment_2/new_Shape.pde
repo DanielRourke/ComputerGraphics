@@ -1,6 +1,43 @@
 
 
 
+//public void saveShapes()
+//{
+
+//   for (int i  = 0; i < shapes.size(); i++)
+             
+               
+               
+//               addBox("Box", sizeX, sizeY , (sizeX + sizeY)/2, 
+//                       (int)(cam.getPosition()[0] * 0.70),
+//                       (int)(cam.getPosition()[1]* 0.70) ,
+//                       (int)(cam.getPosition()[2] * 0.70 ));
+               
+               
+//               println(shapes.get(i));
+//               println(shapes.get(i).fill());
+//               println(shapes.get(i).getPosVec());
+//               println(shapes.get(i).getRotVec());
+//               println(shapes.get(i).drawMode());
+//               //get w b h;
+//               println(shapes.get(i).getPosArray());
+              
+              
+              
+//               TableRow row = table.getRow(i);
+//               println(row.getString("Type") , i);
+               
+//               println(red(c));
+//            //   row.setInt("col", c);
+//               //row.setFloat("colG", (int)green(c));
+//               //row.setFloat("colB", (int)blue(c));
+//               //row.setFloat("colA", (int)alpha(c));
+//             }
+//}
+
+
+
+
 
 Table table;
 
@@ -9,7 +46,6 @@ public void saveShapes()
 {
 
       table = new Table();
-      
          table.addColumn("Type");
          table.addColumn("Width");
          table.addColumn("Height");
@@ -31,22 +67,21 @@ public void saveShapes()
          //table.addColumn("stoB");
          //table.addColumn("stoA");
          table.addColumn("strWeight");
-         table.addColumn("texPath");
-         table.addColumn("v1");
-         table.addColumn("v2");
-         table.addColumn("v3");
-         table.addColumn("v4");
-         table.addColumn("v5");
-         table.addColumn("v6");
-         table.addColumn("VSize");
-         table.addColumn("scale");
+         //table.addColumn("texPath");
+         //table.addColumn("v1");
+         //table.addColumn("v2");
+         //table.addColumn("v3");
+         //table.addColumn("v4");
+         //table.addColumn("v5");
+         //table.addColumn("v6");
+         //table.addColumn("VSize");
+         //table.addColumn("str");
          table.addColumn("drawT");
    for (int i  = 0; i < shapes.size(); i++)
    {
      println("saving", shapes.get(i));
-     
             shapes.get(i).getPosArray(); 
-           println("saved");
+           
   }
   
   
@@ -63,43 +98,11 @@ void loadShapes2()
       
        String type = row.getString("Type");
            
-           if(type.equals("DBox"))
+           if(type.equals("Box"))
            {
             
                  DBox box = new DBox(this, row);
                  shapes.add(box);           
-           }
-           else if (type.equals("DSphere"))
-           {
-              
-             DSphere shpere = new DSphere(this, row);
-             shapes.add(shpere);
-           }
-           
-           else if (type.equals("DBezTube"))
-           {
-                            int s = row.getInt("VSize");
-                PVector[] pointArray = new PVector[s];
-               
-                pointArray[0] = new PVector(row.getFloat("posX") ,
-                                            row.getFloat("posY") ,
-                                            row.getFloat("posZ"));
-                pointArray[1] = new PVector( row.getFloat("rotX"),
-                                             row.getFloat("rotY"),
-                                             row.getFloat("rotZ") );
-                if(s >2){
-                  pointArray[2] = new PVector( row.getFloat("v1"),
-                                               row.getFloat("v2"),
-                                               row.getFloat("v3"));
-                }
-                if(s>3){
-                  pointArray[3] = new PVector( row.getFloat("v4"),
-                                               row.getFloat("v5"),
-                                               row.getFloat("v6"));
-                }
-             
-             DBezTube dbz = new DBezTube(this, row, pointArray);
-             shapes.add(dbz);
            }
            //else if(type.equals("Ellipsoid"))
            //{

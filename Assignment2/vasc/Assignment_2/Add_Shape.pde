@@ -22,8 +22,7 @@ void addShape()
                        (int)(cam.getPosition()[1]* 0.70) ,
                        (int)(cam.getPosition()[2] * 0.70 ));
            shapes.add(box);
-           //picked = shapes.get(shapes.size() - 1);
-           //previousColor = color(255,255,255);
+           picked = shapes.get(shapes.size() - 1);
            //addBox("Box", sizeX, sizeY , (sizeX + sizeY)/2, 
            //            (int)(cam.getPosition()[0] * 0.70),
            //            (int)(cam.getPosition()[1]* 0.70) ,
@@ -32,18 +31,17 @@ void addShape()
            shapeType = -1;
            break;
        case 2:
-           DSphere sphere= new DSphere(this, 20 ,30);
+           Ellipsoid sphere= new Ellipsoid(this, 20 ,30);
            sphere.setRadius((sizeX + sizeY)/2);
            sphere.moveTo((int)(cam.getPosition()[0] * 0.60) ,
                          (int)(cam.getPosition()[1]* 0.60) ,
                          (int)(cam.getPosition()[2] * 0.60) );
            shapes.add(sphere);
-           //picked = shapes.get(shapes.size() - 1);
-           //previousColor = color(255,255,255);
-           //addSphere("Ellipsoid", (int)(cam.getPosition()[0] * 0.60) ,
-           //                        (int)(cam.getPosition()[1]* 0.60) ,
-           //                        (int)(cam.getPosition()[2] * 0.60),  
-           //                        (sizeX + sizeY)/2);
+           picked = shapes.get(shapes.size() - 1);
+           addSphere("Ellipsoid", (int)(cam.getPosition()[0] * 0.60) ,
+                                   (int)(cam.getPosition()[1]* 0.60) ,
+                                   (int)(cam.getPosition()[2] * 0.60),  
+                                   (sizeX + sizeY)/2);
            drawingActive = false;
            shapeType = -1;
            break;
@@ -107,7 +105,7 @@ void addShape()
             if(points.size() <4)
                  points.add(new PVector(cam.getPosition()[0],cam.getPosition()[1],cam.getPosition()[2]));
              else {
-                  createbezShapeTube();
+                   createbezShapeTube();
                   drawingActive = false;
                   points.clear();
              }
@@ -123,34 +121,26 @@ void addShape()
 //creates a bezShape Tube from predifined Points
 void createbezShapeTube()
 {
-         //   P_Bezier3D bez;
-         //   BezTube btube;
-         //   println(points.size());
-         //   PVector[] pointArray = new PVector[points.size()];
-         //   int i = 0;
-         //   for (PVector pv : points)
-         //   {
-         //     println(pv);
-         //     pointArray[i] = pv;
-         //     i++;
-         //   }
-
-         //   bez = new P_Bezier3D(pointArray, i);
-         //   btube = new BezTube(this, bez, 7, 7, 7);
-         ////   applyFill((Shape3D)btube);
-         //   //center.addShape(btube);
-         //   shapes.add(btube);
-         //   shapeType = 0;
+            P_Bezier3D bez;
+            BezTube btube;
+            println(points.size());
             PVector[] pointArray = new PVector[points.size()];
             int i = 0;
-             for (PVector pv : points)
+            for (PVector pv : points)
             {
               println(pv);
               pointArray[i] = pv;
               i++;
             }
-            
-            DBezTube dbz = new DBezTube(this,pointArray );
-            shapes.add(dbz);
+
+            bez = new P_Bezier3D(pointArray, i);
+            btube = new BezTube(this, bez, 7, 7, 7);
+         //   applyFill((Shape3D)btube);
+            //center.addShape(btube);
+            shapes.add(btube);
+            picked = shapes.get(shapes.size() - 1);
+            println(picked);
             shapeType = 0;
+            
+            addBezTube("BezTube" , 7,7,7 , pointArray, i );
 }

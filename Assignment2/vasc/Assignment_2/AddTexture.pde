@@ -8,13 +8,13 @@ void addTexture()
              if (picked.tag.equals("DBox"))
              {
                picked.drawMode(S3D.TEXTURE);
-               selectInput("Select a Texture" , "dboxTexture");
+               selectInput("Select a Texture" , "boxTexture");
              }
              else if (picked.tag.equals("Ellipsoid"))
              {
                picked.drawMode(S3D.WIRE |S3D.TEXTURE);
                picked.strokeWeight(0);
-               selectInput("Select a Texture" , "dboxTexture");
+               selectInput("Select a Texture" , "boxTexture");
              }
              else if (picked.tag.equals("Toroid"))
              {
@@ -33,9 +33,9 @@ void addTexture()
              }
              else if (picked.tag.equals("BezTube"))
              {
-                     picked.drawMode(S3D.TEXTURE);
+                     //picked.drawMode(S3D.TEXTURE);
                      //picked.drawMode(S3D.TEXTURE, S3D.BOTH_CAP);
-                     selectInput("Select a Texture" , "dboxTexture");
+                     selectInput("Select a Texture" , "beztubeTexture");
              }
              
              
@@ -46,7 +46,7 @@ void addTexture()
 
 
 
-void  dboxTexture(File selection) {
+void  boxTexture(File selection) {
   if (selection == null) {
       println("Window was closed or the user hit cancel.");
   } else {
